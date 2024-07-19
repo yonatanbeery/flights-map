@@ -5,6 +5,7 @@ import {getMaxHeight} from './radiusAbovePoint';
 
 const run = async () => {
   const heights:Point[][] = await readCoordinatesFromFile()
+  
   const maxs = getMaxHeight(heights);
 
   Object.keys(maxs).forEach((lat) => {
