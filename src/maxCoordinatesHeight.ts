@@ -37,6 +37,5 @@ export const getMaxHeights = async () => {
     });
   })
 
-  console.log(maxHeights)
-  // console.log(getMaxHeightInRadius(heights, {lat: 33.97, long: 35.88}, radius));  
+  return maxHeights;
 }
