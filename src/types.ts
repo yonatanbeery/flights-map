@@ -1,9 +1,15 @@
 export type Point = {
     lat: number;
     long: number;
-    elevation?: number;
+    alt?: number;
+}
+
+type getAltitudeResponsePoint = {
+    lat: number;
+    long: number;
+    elevation: number;
 }
 
 export type getAltitudeResponse = {
-  results: Point[];
+  results: getAltitudeResponsePoint[]
 }
