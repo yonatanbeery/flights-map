@@ -1,4 +1,5 @@
 import { Point } from "./types"
+import * as fs from "fs";
 
 const areaLimits: Point[] = [
   {
@@ -25,7 +26,14 @@ export const getAllPointsAltitudes = () => {
     }
   }
   console.log({counter})
-  JSON.stringify(allCoordinates)
+  
+  fs.writeFile("coordinates.json", JSON.stringify(allCoordinates), (error) => {
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+    console.log("coordinates.json written correctly");
+  });
 }
 
 const LatDiffToKM = (lat1, lat2) => {
