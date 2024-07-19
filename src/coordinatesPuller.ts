@@ -1,4 +1,3 @@
-import { all } from "axios";
 import { getAltitudes } from "./api";
 import { Point, getAltitudeResponsePoint } from "./types"
 import * as fs from "fs";
