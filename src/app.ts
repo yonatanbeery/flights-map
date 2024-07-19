@@ -1,13 +1,8 @@
-import express from 'express';
-import {getAllPointsAltitudes} from './coordinates-puller';
-const app = express();
-const port = 3000;
+//import {getAllPointsAltitudes} from './coordinates-puller';
+import {readCoordinatesFromFile} from './coordinateFormatter';
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const run = async () => {
+  const heights = await readCoordinatesFromFile()
+}
 
-app.listen(port, () => {
-  getAllPointsAltitudes();
-  return console.log(`Express is listening at http://localhost:${port}`);
-});
+run()
