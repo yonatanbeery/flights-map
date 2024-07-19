@@ -1,8 +1,13 @@
 import axsios from "axios";
-import { getAltitudeResponse } from "./types";
+import { getAltitudeResponse, Point } from "./types";
 
 const baseUrl = 'https://api.open-elevation.com/api/v1/lookup';
 
-export const getAltitude = async (lat: number, long: number): Promise<getAltitudeResponse> => {
-    return (await axsios.get(`${baseUrl}?locations=${lat},${long}`)).data;
+export const getAltitudes = async (points: Point[]): Promise<getAltitudeResponse> => {
+    let locations = '';
+    points.forEach((point) => {
+        locations += `${point.lat},${point.long}|`;
+    });
+
+    return (await axsios.get(`${baseUrl}?locations=${locations}`)).data;
 }

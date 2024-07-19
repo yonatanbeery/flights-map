@@ -1,5 +1,6 @@
-import { getAltitude } from "./api";
-import { Point } from "./types"
+import { all } from "axios";
+import { getAltitudes } from "./api";
+import { Point, getAltitudeResponsePoint } from "./types"
 import * as fs from "fs";
 
 const areaLimits: Point[] = [
@@ -15,19 +16,43 @@ const areaLimits: Point[] = [
 
 const pointAccuracy = 0.01
 
+// export const getAllPointsAltitudes = async () => {
+//   let counter = 0;
+//   const allCoordinates:Point[][] = []
+//   for(let lat = 0; lat < (areaLimits[1].lat - areaLimits[0].lat) / pointAccuracy; lat++) {
+//     allCoordinates[lat] = []
+//     for(let long = 0; long < (areaLimits[1].long - areaLimits[0].long) / pointAccuracy; long++) {
+//       const alt = (await getAltitude(lat, long)).results[0].elevation;     
+//       allCoordinates[lat][long] = {lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy, alt}
+//       console.log(allCoordinates[lat][long]);
+//       counter ++
+//     }
+//   }
+//   console.log({counter})
+  
+//   fs.writeFile("coordinates.json", JSON.stringify(allCoordinates), (error) => {
+//     if (error) {
+//       console.error(error);
+//       throw error;
+//     }
+//     console.log("coordinates.json written correctly");
+//   });
+// }
+
+
 export const getAllPointsAltitudes = async () => {
-  let counter = 0;
-  const allCoordinates:Point[][] = []
+  const allCoordinates:getAltitudeResponsePoint[][] = []
   for(let lat = 0; lat < (areaLimits[1].lat - areaLimits[0].lat) / pointAccuracy; lat++) {
-    allCoordinates[lat] = []
+    const queriedCoordinates = [];
     for(let long = 0; long < (areaLimits[1].long - areaLimits[0].long) / pointAccuracy; long++) {
-      const alt = (await getAltitude(lat, long)).results[0].elevation;     
-      allCoordinates[lat][long] = {lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy, alt}
-      console.log(allCoordinates[lat][long]);
-      counter ++
+      queriedCoordinates.push({lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy})
     }
+    
+    const results = (await getAltitudes(queriedCoordinates)).results
+    allCoordinates.push(results);
+    console.log(results);
+    
   }
-  console.log({counter})
   
   fs.writeFile("coordinates.json", JSON.stringify(allCoordinates), (error) => {
     if (error) {
