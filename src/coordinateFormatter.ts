@@ -8,12 +8,12 @@ export const readCoordinatesFromFile = async () => {
     { encoding: 'utf8', flag: 'r' });
   fileContent = JSON.parse(data)
     
-  const heights:number[][] = []
+  const heights:Point[][] = []
 
   fileContent.forEach((coords: getAltitudeResponsePoint[]) => {
     coords.forEach((coord) => {
       if(!heights[coord.latitude]) heights[coord.latitude] = []
-      heights[coord.latitude][coord.longitude] = coord.elevation
+      heights[coord.latitude][coord.longitude] = {lat: coord.latitude, long: coord.longitude, alt: coord.elevation};
     })
   });
   return heights;
