@@ -13,9 +13,8 @@ const isPointInRadius = (center: Point, point: Point, redius: number) => {
 const getMaxHeightInRadius = (heights: Point[][], point: Point, radius: number) => {
   let maxHeight: Point | undefined = undefined;
   
-  for (let lat = parseFloat((point.lat - radius * latCorrection * pointDiff).toFixed(2)); lat <= point.lat + radius * latCorrection * pointDiff ; lat = parseFloat((lat + pointDiff).toFixed(2))) {
-    //there isnt use in "longDiff" in porpuse. we are checking the worst case senario, and 0.9317 is not the worst case
-    for (let long = parseFloat((point.long - radius * pointDiff).toFixed(2)); long <= point.long + radius * pointDiff; long = parseFloat((long + pointDiff).toFixed(2))) {           
+  for (let lat = parseFloat((point.lat - radius / latCorrection * pointDiff).toFixed(2)); lat <= point.lat + radius / latCorrection * pointDiff ; lat = parseFloat((lat + pointDiff).toFixed(2))) {
+    for (let long = parseFloat((point.long - radius / longCorrection * pointDiff).toFixed(2)); long <= point.long + radius / longCorrection * pointDiff; long = parseFloat((long + pointDiff).toFixed(2))) {           
       if (heights[lat] && heights[lat][long]) {
         if (isPointInRadius(point, heights[lat][long], radius) && (!maxHeight || heights[lat][long].alt > maxHeight.alt)) {
           maxHeight = heights[lat][long];
