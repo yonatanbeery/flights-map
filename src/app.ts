@@ -7,7 +7,7 @@ const run = async () => {
   latKeys.forEach((lat) => {
     const longKeys = Object.keys(maxHeights[lat]).sort();
     longKeys.forEach((long) => {
-      console.log(`{lat: ${lat}, long: ${long}, maxAlt: ${JSON.stringify(maxHeights[lat][long])}}`);
+      console.log(`{ lat: '${lat}', long: '${long}', alt: ${maxHeights[lat][long].alt} }`);
     })
   })
 }

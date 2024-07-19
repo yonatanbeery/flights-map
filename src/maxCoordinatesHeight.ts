@@ -15,11 +15,11 @@ const getMaxHeightInRadius = (heights: Point[][], point: Point, radius: number) 
   
   for (let lat = parseFloat((point.lat - radius / latCorrection * pointDiff).toFixed(2)); lat <= point.lat + radius / latCorrection * pointDiff ; lat = parseFloat((lat + pointDiff).toFixed(2))) {
     for (let long = parseFloat((point.long - radius / longCorrection * pointDiff).toFixed(2)); long <= point.long + radius / longCorrection * pointDiff; long = parseFloat((long + pointDiff).toFixed(2))) {           
-      if (heights[lat] && heights[lat][long]) {
-        if (isPointInRadius(point, heights[lat][long], radius) && (!maxHeight || heights[lat][long].alt > maxHeight.alt)) {
-          maxHeight = heights[lat][long];
+        if (heights[lat] && heights[lat][long]) {
+            if (isPointInRadius(point, heights[lat][long], radius) && (!maxHeight || heights[lat][long].alt > maxHeight.alt)) {
+            maxHeight = heights[lat][long];
+            }
         }
-      }
     }
   }
 
