@@ -1,4 +1,4 @@
-import axsios, { AxiosResponse } from "axios";
+import axsios from "axios";
 import { getAltitudeResponse } from "./types";
 
 const baseUrl = 'https://api.open-elevation.com/api/v1/lookup';

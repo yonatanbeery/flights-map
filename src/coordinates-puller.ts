@@ -1,3 +1,4 @@
+import { getAltitude } from "./api";
 import { Point } from "./types"
 import * as fs from "fs";
 
@@ -14,13 +15,14 @@ const areaLimits: Point[] = [
 
 const pointAccuracy = 0.01
 
-export const getAllPointsAltitudes = () => {
+export const getAllPointsAltitudes = async () => {
   let counter = 0;
   const allCoordinates:Point[][] = []
   for(let lat = 0; lat < (areaLimits[1].lat - areaLimits[0].lat) / pointAccuracy; lat++) {
     allCoordinates[lat] = []
     for(let long = 0; long < (areaLimits[1].long - areaLimits[0].long) / pointAccuracy; long++) {
-      allCoordinates[lat][long] = {lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy, alt: 123}
+      const alt = (await getAltitude(lat, long)).results[0].elevation;     
+      allCoordinates[lat][long] = {lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy, alt}
       console.log(allCoordinates[lat][long]);
       counter ++
     }
