@@ -1,20 +1,8 @@
 import { all } from "axios";
-import { getAltitudes } from "./api";
-import { Point, getAltitudeResponsePoint } from "./types"
+import { getAltitudes } from "../utils/api";
+import { Point, getAltitudeResponsePoint } from "../utils/types"
 import * as fs from "fs";
-
-export const areaLimits = {
-  min: {
-    lat: 33.090000,
-    long: 35.080000
-  },
-  max:{
-    lat: 34.730000,
-    long: 36.660000
-  }
-}
-
-const pointAccuracy = 0.01
+import { areaLimits, pointAccuracy } from "../utils/globals";
 
 //This function only to be used once. to pull all the hights of the coordinates in a specific area
 export const getAllPointsAltitudes = async () => {

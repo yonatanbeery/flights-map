@@ -1,14 +1,14 @@
-import { Point } from "./types";
-import { areaLimits } from "./coordinates-puller";
-
-const warningRadius = 10; //In KM Unit
+import { Point } from "../utils/types";
+import { warningRadius, layersHeightDiff, areaLimits } from "../utils/globals";
 
 export const getMaxHeight = (heights: Point[][]):Point[][] => {
   const maxHeights: Point[][] = [];
   Object.keys(heights).forEach((lat) => {
     Object.keys(heights[lat]).forEach((long) => {
       if (!maxHeights[lat]) maxHeights[lat] = []
-      maxHeights[lat][long] = {lat, long, alt: getMaxHeightInRadius(heights[lat][long], heights).alt}
+      const maxPoint = getMaxHeightInRadius(heights[lat][long], heights)
+      //maxHeights[lat][long] = {original:{lat, long, alt: heights[lat][long].alt}, max: {lat: maxPoint.lat, long: maxPoint.long, alt: maxPoint.alt}}  
+      maxHeights[lat][long] = {lat, long, alt: maxPoint.alt + layersHeightDiff - (maxPoint.alt % layersHeightDiff)}
     })
   })
   return maxHeights;

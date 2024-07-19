@@ -1,4 +1,4 @@
-import { getAltitudeResponsePoint, Point } from "./types"
+import { getAltitudeResponsePoint, Point } from "../utils/types"
 import * as fs from "fs";
 
 export const readCoordinatesFromFile = async ():Promise<Point[][]> => {
