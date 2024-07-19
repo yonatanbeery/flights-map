@@ -7,8 +7,8 @@ export const getMaxHeight = (heights: Point[][]):Point[][] => {
   const maxHeights: Point[][] = [];
   Object.keys(heights).forEach((lat) => {
     Object.keys(heights[lat]).forEach((long) => {
-      if (!maxHeights[lat]) maxHeights[lat] = []      
-      maxHeights[lat][long] = getMaxHeightInRadius(heights[lat][long], heights)
+      if (!maxHeights[lat]) maxHeights[lat] = []
+      maxHeights[lat][long] = {lat, long, alt: getMaxHeightInRadius(heights[lat][long], heights).alt}
     })
   })
   return maxHeights;
