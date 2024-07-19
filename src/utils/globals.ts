@@ -7,8 +7,8 @@ export const areaLimits = {
       long: 35.080000
     },
     max:{
-      lat: 34.730000,
-      long: 36.660000
+      lat: 34.720000,
+      long: 36.650000
     }
   }
   

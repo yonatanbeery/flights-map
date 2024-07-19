@@ -1,5 +1,5 @@
 import { Point } from "../utils/types";
-import { warningRadius, layersHeightDiff, areaLimits } from "../utils/globals";
+import { areaLimits } from "../utils/globals";
 
 export const findHeightGroups = (heights: Point[][]):Point[][] | any => {
     for(let lat = Number.parseFloat((areaLimits.min.lat).toFixed(2)); lat < Number.parseFloat((areaLimits.max.lat).toFixed(2)); lat = Number.parseFloat((lat + 0.01).toFixed(2))) {

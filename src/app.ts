@@ -16,7 +16,7 @@ const run = async () => {
   const heights:Point[][] = await readCoordinatesFromFile()
   const maxs = getMaxHeight(heights);
   printPoints(maxs)
-  const groups = findHeightGroups(maxs);
+  //const groups = findHeightGroups(maxs);
 }
 
 run()
