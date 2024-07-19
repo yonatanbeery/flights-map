@@ -15,15 +15,21 @@ const areaLimits: Point[] = [
   }
 ]
 
+const pointAccuracy = 0.01
+
 export const getAllPointsAltitudes = () => {
   let counter = 0;
-  for(let lat = areaLimits[0].lat; lat < areaLimits[1].lat; lat += 0.01) {
-    for(let long = areaLimits[0].long; long < areaLimits[1].long; long += 0.01) {
-      console.log({lat, long});
+  const allCoordinates:Point[][] = []
+  for(let lat = 0; lat < (areaLimits[1].lat - areaLimits[0].lat) / pointAccuracy; lat++) {
+    allCoordinates[lat] = []
+    for(let long = 0; long < (areaLimits[1].long - areaLimits[0].long) / pointAccuracy; long++) {
+      allCoordinates[lat][long] = {lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy, alt: 123}
+      console.log(allCoordinates[lat][long]);
       counter ++
     }
   }
   console.log({counter})
+  JSON.stringify(allCoordinates)
 }
 
 const LatDiffToKM = (lat1, lat2) => {
