@@ -3,26 +3,26 @@ import { getAltitudes } from "./api";
 import { Point, getAltitudeResponsePoint } from "./types"
 import * as fs from "fs";
 
-const areaLimits: Point[] = [
-  {
+export const areaLimits = {
+  min: {
     lat: 33.090000,
     long: 35.080000
   },
-  {
+  max:{
     lat: 34.730000,
     long: 36.660000
   }
-]
+}
 
 const pointAccuracy = 0.01
 
 //This function only to be used once. to pull all the hights of the coordinates in a specific area
 export const getAllPointsAltitudes = async () => {
   const allCoordinates:getAltitudeResponsePoint[][] = []
-  for(let lat = 0; lat < (areaLimits[1].lat - areaLimits[0].lat) / pointAccuracy; lat++) {
+  for(let lat = 0; lat < (areaLimits['max'].lat - areaLimits['min'].lat) / pointAccuracy; lat++) {
     const queriedCoordinates = [];
-    for(let long = 0; long < (areaLimits[1].long - areaLimits[0].long) / pointAccuracy; long++) {
-      queriedCoordinates.push({lat: areaLimits[0].lat + lat * pointAccuracy, long: areaLimits[0].long + long * pointAccuracy})
+    for(let long = 0; long < (areaLimits['max'].long - areaLimits['min'].long) / pointAccuracy; long++) {
+      queriedCoordinates.push({lat: areaLimits['min'].lat + lat * pointAccuracy, long: areaLimits['min'].long + long * pointAccuracy})
     }
     
     const results = (await getAltitudes(queriedCoordinates)).results
