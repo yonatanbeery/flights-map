@@ -1,8 +1,4 @@
-type Point = {
-  lat: number;
-  long: number;
-  alt?: number;
-}
+import { Point } from "./types"
 
 const areaLimits: Point[] = [{
   lat: 33.090000,
