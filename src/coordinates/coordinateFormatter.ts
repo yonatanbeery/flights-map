@@ -12,7 +12,7 @@ export const readCoordinatesFromFile = async ():Promise<Point[][]> => {
     { encoding: 'utf8', flag: 'r' });
   fileContent = JSON.parse(data)
     
-  const heights:Point[][] = []
+  const heights:Point[][] = [];
 
   fileContent.forEach((coords: getAltitudeResponsePoint[]) => {
     coords.forEach((coord) => {
