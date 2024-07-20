@@ -24,15 +24,3 @@ const isOnStrightBorderLine = (point: Point, polygon: Point[][]):boolean => {
     (!!polygon[point.lat]?.[Number.parseFloat((point.long + pointAccuracy).toFixed(2))] &&
     !!polygon[point.lat]?.[Number.parseFloat((point.long - pointAccuracy).toFixed(2))])
 }
-
-/*
-const isNotBorderPoint = (point: Point, polygon: Point[]):boolean => {
-    const isEdge = (point.lat == areaLimits.min.lat || point.long == areaLimits.min.long || 
-        point.lat == areaLimits.max.lat || point.long == areaLimits.max.long)  
-
-    return !isEdge && point.alt === polygon[Number.parseFloat((point.lat + pointAccuracy).toFixed(2))]?.[point.long]?.alt &&
-    point.alt === polygon[point.lat]?.[Number.parseFloat((point.long + pointAccuracy).toFixed(2))]?.alt &&
-    point.alt === polygon[Number.parseFloat((point.lat - pointAccuracy).toFixed(2))]?.[point.long]?.alt &&
-    point.alt === polygon[point.lat]?.[Number.parseFloat((point.long - pointAccuracy).toFixed(2))]?.alt
-}
-*/

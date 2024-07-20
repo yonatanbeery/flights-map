@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 
 export class SimpleMap extends Component {
   state = {
@@ -8,15 +8,15 @@ export class SimpleMap extends Component {
   };
 
   render() {
-    const renderedPoints = (lat: number, lng:number) => (
-      <Marker position={{lat, lng}}>
+    const renderedPoints = (polygon: {lat: number, lng:number}[]) => (
+      <Polygon positions={polygon}>
       <Popup>
-        A pretty CSS3 popup. <br /> Easily customizable.
+        minimum height: ...
       </Popup>
-    </Marker>
+    </Polygon>
     )
 
-    const points:{lat:number, lng:number}[] = [{lat: 33.15, lng:35.8}, {lat: 33.1, lng:35.7}]
+    const polygons:{lat:number, lng:number}[][] = [[{lat: 33.15, lng:35.8}, {lat: 33.1, lng:35.7}, {lat: 33.2, lng:35.6}],[{lat: 34.1, lng:35.2}, {lat: 33.9, lng:35.2}, {lat: 34, lng:35}]]
 
     return (
       <div style={{  height: '600px', width: '100%'}}>
@@ -25,7 +25,7 @@ export class SimpleMap extends Component {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
-          {points.map((point => renderedPoints(point.lat, point.lng)))}
+          {polygons.map((polygon => renderedPoints(polygon)))}
         </MapContainer>
       </div>
     );
