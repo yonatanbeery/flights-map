@@ -39,7 +39,11 @@ const findPolygonNonRecursive = (points: Point[][], start: Point) => {
             { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: currPoint.long, alt: currPoint.alt },
             { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: currPoint.long, alt: currPoint.alt },
             { lat: currPoint.lat, long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
-            { lat: currPoint.lat, long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt }
+            { lat: currPoint.lat, long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt }
         ];
 
         neighbors.forEach(neighbor => {
