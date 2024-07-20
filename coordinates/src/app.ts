@@ -11,10 +11,12 @@ const run = async () => {
   console.log("dividing to polygons");
   const polygons = divideToPolygons(maxs);
   console.log("thinning polygons");
-  const thinnedPolygons = polygons.map(polygon => getBorderPoints(polygon))
+  const thinnedPolygons = polygons.map(polygon => getBorderPoints(polygon)).filter((polygon) => polygon.length > 2);
   console.log("polygons");
   Object.keys(thinnedPolygons).forEach(polygon => {
     console.log({coord: thinnedPolygons[polygon]});
-  })}
+  });
+  console.log(`divided to ${thinnedPolygons.length} polygons`);
+}
 
 run()

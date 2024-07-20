@@ -4,7 +4,6 @@ import { pointAccuracy } from "../utils/globals";
 let polygons: Point[][][] = [];
 let visited: boolean[][] = [];
 let currrPolygonIndex = 0;
-let counter = 0;
 
 const initArrays = (points: Point[][]) => {
     polygons = [];
@@ -39,7 +38,11 @@ const findPolygonNonRecursive = (points: Point[][], start: Point) => {
             { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: currPoint.long, alt: currPoint.alt },
             { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: currPoint.long, alt: currPoint.alt },
             { lat: currPoint.lat, long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
-            { lat: currPoint.lat, long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt }
+            { lat: currPoint.lat, long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt }
         ];
 
         neighbors.forEach(neighbor => {
