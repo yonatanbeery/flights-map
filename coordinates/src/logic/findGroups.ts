@@ -28,14 +28,36 @@ const isOnStrightBorderLine = (point: Point, polygon: Point[][]):boolean => {
     !!polygon[point.lat]?.[Number.parseFloat((point.long - pointAccuracy).toFixed(2))])
 }
 
-const sortBorderPoints = (borderPoints: Point[]):Point[] => {
-    const sortedPoints = []
-    const addPointToSortedArray = (point) => {
-        sortedPoints.push()
+const getMinPoint = (points: Point[]):Point => {
+    let minPoint = points[0]
+
+    points.forEach((point) => {
+        if(point.lat < minPoint.lat) minPoint = point
+    })
+
+    return minPoint
+}
+
+const closetPointFromLeft = (point: Point, points: Point[]):Point => {
+    let closestPoint = points[0];
+    points.forEach((comparedPoint) => {
+        const angle = (closestPoint.lat - point.lat)/(closestPoint.long - point.long);
+        if(angle > 0) closestPoint = comparedPoint
+    }) 
+    return closestPoint;
+}
+
+export const sortBorderPoints = (borderPoints: Point[]):Point[] => {
+    if(borderPoints.length < 4) return borderPoints;
+
+    const sortedPoints = [];
+    const minPoint = getMinPoint(borderPoints)
+    let nextPoint = minPoint;
+    while(nextPoint !== minPoint ||sortedPoints.length === 0) {
+        sortedPoints.push(nextPoint);
+        nextPoint = closetPointFromLeft(nextPoint, borderPoints)
     }
 
     //{lat: polygon[lat][long].lat, lng: polygon[lat][long].long, alt: polygon[lat][long].alt}
-    borderPoints.forEach(_ => sortedPoints.push())
-    borderPoints.forEach(point => addPointToSortedArray(point))
     return sortedPoints
 }
