@@ -17,12 +17,26 @@ const initArrays = (points: Point[][]) => {
       })
 }
 
-const findPolygon = (points: Point[][], currPoint: Point) => {
-    if (points[currPoint.lat - pointAccuracy][currPoint.long]) {
+const isCoordinatesInPolygon = (points: Point[][], lat: number, long: number, height: number): boolean => {
+    return points[lat]?.[long] && !visited[lat][long] && points[lat][long].alt == height
+}
 
+const findPolygon = (points: Point[][], currPoint: Point) => {
+    if (isCoordinatesInPolygon(points, currPoint.lat - pointAccuracy, currPoint.long, currPoint.alt)) {
+        findPolygon(points, points[currPoint.lat - pointAccuracy][currPoint.long]);
+    }
+    
+    if (isCoordinatesInPolygon(points, currPoint.lat + pointAccuracy, currPoint.long, currPoint.alt)) {
+        findPolygon(points, points[currPoint.lat + pointAccuracy][currPoint.long]);
     }
 
+    if (isCoordinatesInPolygon(points, currPoint.lat, currPoint.long - pointAccuracy, currPoint.alt)) {
+        findPolygon(points, points[currPoint.lat - pointAccuracy][currPoint.long - pointAccuracy]);
+    }
 
+    if (isCoordinatesInPolygon(points, currPoint.lat, currPoint.long + pointAccuracy, currPoint.alt)) {
+        findPolygon(points, points[currPoint.lat - pointAccuracy][currPoint.long + pointAccuracy]);
+    }
 }
 
 export const divideToPolygons = (points: Point[][]): Point[][] => {
@@ -32,7 +46,7 @@ export const divideToPolygons = (points: Point[][]): Point[][] => {
         Object.keys(points[lat]).sort().forEach((long) => {
             if (!visited[lat][long]) {
                 polygons[currrPolygonIndex] = [];
-                findPolygon(points[lat][long]);
+                findPolygon(points, points[lat][long]);
                 currrPolygonIndex++;
             }
         })
