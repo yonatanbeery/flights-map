@@ -3,20 +3,33 @@ import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 
 export class SimpleMap extends Component {
   state = {
-    center: {lat: 33.15, lng: 35.8},
-    zoom: 9,
+    center: { lat: 34.2, lng: 36.02},
+    zoom: 10,
   };
 
   render() {
-    const renderedPoints = (polygon: {lat: number, lng:number}[]) => (
+    const renderedPoints = (polygon: {lat: number, lng:number, alt: number}[]) => (
       <Polygon positions={polygon}>
       <Popup>
-        minimum height: ...
+        minimum height: {polygon[0].alt}
       </Popup>
     </Polygon>
     )
 
-    const polygons:{lat:number, lng:number}[][] = [[{lat: 33.15, lng:35.8}, {lat: 33.1, lng:35.7}, {lat: 33.2, lng:35.6}],[{lat: 34.1, lng:35.2}, {lat: 33.9, lng:35.2}, {lat: 34, lng:35}]]
+    const polygons:{lat:number, lng:number, alt: number}[][] = [
+      [
+        { lat: 34.61, lng: 36.02, alt: 1500 },
+        { lat: 34.61, lng: 36.14, alt: 1500 },
+        { lat: 34.72, lng: 36.14, alt: 1500 },
+        { lat: 34.72, lng: 36.02, alt: 1500 },
+      ], [
+        { lat: 34.51, lng: 36.02, alt: 1500 },
+        { lat: 34.51, lng: 36.14, alt: 1500 },
+        { lat: 34.61, lng: 36.14, alt: 1500 },
+        { lat: 34.61, lng: 36.02, alt: 1500 },
+      ]
+      
+    ]
 
     return (
       <div style={{  height: '600px', width: '100%'}}>
