@@ -2,7 +2,7 @@ import {readCoordinatesFromFile} from './coordinates/coordinateFormatter';
 import { Point } from './utils/types';
 import {getMaxHeight} from './logic/radiusAbovePoint';
 import { areaLimits } from './utils/globals';
-import {findHeightGroups} from './logic/findGroups';
+
 
 const printPoints = (points) => {
   for(let lat = Number.parseFloat((areaLimits.min.lat).toFixed(2)); lat < Number.parseFloat((areaLimits.max.lat).toFixed(2)); lat = Number.parseFloat((lat + 0.01).toFixed(2))) {
