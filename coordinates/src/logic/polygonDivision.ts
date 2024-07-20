@@ -4,7 +4,6 @@ import { pointAccuracy } from "../utils/globals";
 let polygons: Point[][][] = [];
 let visited: boolean[][] = [];
 let currrPolygonIndex = 0;
-let counter = 0;
 
 const initArrays = (points: Point[][]) => {
     polygons = [];
