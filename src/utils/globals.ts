@@ -13,3 +13,5 @@ export const areaLimits = {
   }
   
   export const pointAccuracy = 0.01
+
+  export const meterToFeet = 3.28084; //1 meter = 3.28084 feet

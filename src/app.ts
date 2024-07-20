@@ -13,7 +13,8 @@ const printPoints = (points) => {
 }
 
 const run = async () => {
-  const heights:Point[][] = await readCoordinatesFromFile()
+  const heights:Point[][] = await readCoordinatesFromFile();
+  printPoints(heights);
   const maxs = getMaxHeight(heights);
   const inBorderPoints = getBorderPoints(maxs);
   inBorderPoints.forEach((point) => console.log(point))
