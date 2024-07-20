@@ -1,9 +1,10 @@
 import { Point } from "../utils/types";
 import { pointAccuracy } from "../utils/globals";
 
-let polygons:Point[][][] = [];
-let visited:boolean[][] = [];
+let polygons: Point[][][] = [];
+let visited: boolean[][] = [];
 let currrPolygonIndex = 0;
+let counter = 0;
 
 const initArrays = (points: Point[][]) => {
     polygons = [];
@@ -12,36 +13,40 @@ const initArrays = (points: Point[][]) => {
     Object.keys(points).forEach((lat) => {
         visited[lat] = [];
         Object.keys(points[lat]).forEach((long) => {
-          visited[lat][long] = false;
+            visited[lat][long] = false;
         })
-      })
+    })
 }
 
 const isCoordinatesInPolygon = (points: Point[][], lat: number, long: number, height: number): boolean => {
-    return points[lat]?.[long] && !visited[lat][long] && points[lat][long].alt == height
+    return points[lat]?.[long] && !visited[lat][long] && points[lat][long].alt === height;
 }
 
-const findPolygon = (points: Point[][], currPoint: Point) => {
-    if (!polygons[currrPolygonIndex][currPoint.lat]) {
-        polygons[currrPolygonIndex][currPoint.lat] = [];
-    }
-    polygons[currrPolygonIndex][currPoint.lat][currPoint.long] = points[currPoint.lat][currPoint.long];   
-    visited[currPoint.lat][currPoint.long] = true;
+const findPolygonNonRecursive = (points: Point[][], start: Point) => {
+    const stack = [start];
 
-    if (isCoordinatesInPolygon(points, parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), currPoint.long, currPoint.alt)) {
-        findPolygon(points, points[parseFloat((currPoint.lat - pointAccuracy).toFixed(2))][currPoint.long]);
-    }
-    
-    if (isCoordinatesInPolygon(points, parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), currPoint.long, currPoint.alt)) {
-        findPolygon(points, points[parseFloat((currPoint.lat + pointAccuracy).toFixed(2))][currPoint.long]);
-    }
+    while (stack.length > 0) {
+        const currPoint = stack.pop();
+        if (!currPoint) continue; // Ensure currPoint is not undefined
 
-    if (isCoordinatesInPolygon(points, currPoint.lat, parseFloat((currPoint.long - pointAccuracy).toFixed(2)), currPoint.alt)) {
-        findPolygon(points, points[currPoint.lat][parseFloat((currPoint.long - pointAccuracy).toFixed(2))]);
-    }
+        if (!polygons[currrPolygonIndex][currPoint.lat]) {
+            polygons[currrPolygonIndex][currPoint.lat] = [];
+        }
+        polygons[currrPolygonIndex][currPoint.lat][currPoint.long] = points[currPoint.lat][currPoint.long];
+        visited[currPoint.lat][currPoint.long] = true;
 
-    if (isCoordinatesInPolygon(points, currPoint.lat, parseFloat((currPoint.long + pointAccuracy).toFixed(2)), currPoint.alt)) {
-        findPolygon(points, points[currPoint.lat][parseFloat((currPoint.long + pointAccuracy).toFixed(2))]);
+        const neighbors = [
+            { lat: parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), long: currPoint.long, alt: currPoint.alt },
+            { lat: parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), long: currPoint.long, alt: currPoint.alt },
+            { lat: currPoint.lat, long: parseFloat((currPoint.long - pointAccuracy).toFixed(2)), alt: currPoint.alt },
+            { lat: currPoint.lat, long: parseFloat((currPoint.long + pointAccuracy).toFixed(2)), alt: currPoint.alt }
+        ];
+
+        neighbors.forEach(neighbor => {
+            if (isCoordinatesInPolygon(points, neighbor.lat, neighbor.long, neighbor.alt)) {
+                stack.push(points[neighbor.lat][neighbor.long]);
+            }
+        });
     }
 }
 
@@ -52,7 +57,7 @@ export const divideToPolygons = (points: Point[][]): Point[][][] => {
         Object.keys(points[lat]).sort().forEach((long) => {
             if (!visited[lat][long]) {
                 polygons[currrPolygonIndex] = [];
-                findPolygon(points, points[lat][long]);
+                findPolygonNonRecursive(points, points[lat][long]);
                 currrPolygonIndex++;
             }
         })
