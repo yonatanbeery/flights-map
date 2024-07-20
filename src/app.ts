@@ -2,6 +2,7 @@ import {readCoordinatesFromFile} from './coordinates/coordinateFormatter';
 import { Point } from './utils/types';
 import {getMaxHeight} from './logic/radiusAbovePoint';
 import { areaLimits } from './utils/globals';
+import { convertMetersToFeets } from './logic/metersToFeets';
 
 
 const printPoints = (points) => {
@@ -13,7 +14,8 @@ const printPoints = (points) => {
 }
 
 const run = async () => {
-  const heights:Point[][] = await readCoordinatesFromFile()
+  const heights:Point[][] = convertMetersToFeets(await readCoordinatesFromFile());
+  printPoints(heights);
   const maxs = getMaxHeight(heights);
   printPoints(maxs)
   //const groups = findHeightGroups(maxs);

@@ -7,7 +7,7 @@ export const convertMetersToFeets = (points: Point[][]) => {
     Object.keys(points).forEach((lat) => {
         convertedPoints[lat] = [];
         Object.keys(points[lat]).forEach((long) => {
-            convertedPoints[lat][long] = {...(convertedPoints[lat][long]), alt: convertedPoints[lat][long].alt * meterToFeet};
+            convertedPoints[lat][long] = {...(points[lat][long]), alt: Math.round(points[lat][long].alt * meterToFeet)};
         })
     });
 

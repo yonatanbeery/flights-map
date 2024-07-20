@@ -15,5 +15,6 @@ export const readCoordinatesFromFile = async ():Promise<Point[][]> => {
       heights[coord.latitude][coord.longitude] = {lat: coord.latitude, long: coord.longitude, alt: coord.elevation}
     })
   });
+  
   return heights;
 }
