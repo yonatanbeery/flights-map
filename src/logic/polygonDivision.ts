@@ -1,7 +1,7 @@
 import { Point } from "../utils/types";
 import { pointAccuracy } from "../utils/globals";
 
-let polygons:Point[][] = [];
+let polygons:Point[][][] = [];
 let visited:boolean[][] = [];
 let currrPolygonIndex = 0;
 
@@ -22,7 +22,10 @@ const isCoordinatesInPolygon = (points: Point[][], lat: number, long: number, he
 }
 
 const findPolygon = (points: Point[][], currPoint: Point) => {
-    polygons[currrPolygonIndex].push(points[currPoint.lat][currPoint.long]);
+    if (!polygons[currrPolygonIndex][currPoint.lat]) {
+        polygons[currrPolygonIndex][currPoint.lat] = [];
+    }
+    polygons[currrPolygonIndex][currPoint.lat][currPoint.long] = points[currPoint.lat][currPoint.long];   
     visited[currPoint.lat][currPoint.long] = true;
 
     if (isCoordinatesInPolygon(points, parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), currPoint.long, currPoint.alt)) {
@@ -42,7 +45,7 @@ const findPolygon = (points: Point[][], currPoint: Point) => {
     }
 }
 
-export const divideToPolygons = (points: Point[][]): Point[][] => {
+export const divideToPolygons = (points: Point[][]): Point[][][] => {
     initArrays(points);
 
     Object.keys(points).sort().forEach((lat) => {
