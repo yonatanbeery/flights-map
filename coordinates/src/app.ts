@@ -13,7 +13,8 @@ const run = async () => {
   console.log("thinning polygons");
   const thinnedPolygons = polygons.map(polygon => getBorderPoints(polygon))
   console.log("polygons");
-  thinnedPolygons.forEach((point) => console.log(point))
-}
+  Object.keys(thinnedPolygons).forEach(polygon => {
+    console.log({coord: thinnedPolygons[polygon]});
+  })}
 
 run()
