@@ -1,5 +1,10 @@
+import { meterToFeet } from "../utils/globals";
 import { getAltitudeResponsePoint, Point } from "../utils/types"
 import * as fs from "fs";
+
+const convertMeterToFeet = (meter: number): number => {
+  return Math.round(meter * meterToFeet);
+}
 
 export const readCoordinatesFromFile = async ():Promise<Point[][]> => {
   let fileContent:getAltitudeResponsePoint[][];
@@ -12,9 +17,9 @@ export const readCoordinatesFromFile = async ():Promise<Point[][]> => {
   fileContent.forEach((coords: getAltitudeResponsePoint[]) => {
     coords.forEach((coord) => {
       if(!heights[coord.latitude]) heights[coord.latitude] = []
-      heights[coord.latitude][coord.longitude] = {lat: coord.latitude, long: coord.longitude, alt: coord.elevation}
+      heights[coord.latitude][coord.longitude] = {lat: coord.latitude, long: coord.longitude, alt: convertMeterToFeet(coord.elevation)}
     })
   });
-  
+
   return heights;
 }
