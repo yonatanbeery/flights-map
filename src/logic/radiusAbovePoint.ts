@@ -1,5 +1,5 @@
 import { Point } from "../utils/types";
-import { warningRadius, areaLimits, pointAccuracy } from "../utils/globals";
+import { warningRadius, areaLimits, layersHeightDiff } from "../utils/globals";
 
 export const getMaxHeight = (heights: Point[][]):Point[][] => {
   const maxHeights: Point[][] = [];
@@ -7,9 +7,7 @@ export const getMaxHeight = (heights: Point[][]):Point[][] => {
     Object.keys(heights[lat]).forEach((long) => {
       if (!maxHeights[lat]) maxHeights[lat] = []
       const maxPoint = getMaxHeightInRadius(heights[lat][long], heights)
-      //maxHeights[lat][long] = {original:{lat, long, alt: heights[lat][long].alt}, max: {lat: maxPoint.lat, long: maxPoint.long, alt: maxPoint.alt}}  
-      maxHeights[lat][long] = {lat, long, alt: maxPoint.alt};
-      //maxHeights[lat][long] = {lat, long, alt: maxPoint.alt + layersHeightDiff - (maxPoint.alt % layersHeightDiff)}
+      maxHeights[lat][long] = {lat, long, alt: maxPoint.alt + layersHeightDiff - (maxPoint.alt % layersHeightDiff)}
     })
   })
   return maxHeights;
