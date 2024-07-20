@@ -22,20 +22,23 @@ const isCoordinatesInPolygon = (points: Point[][], lat: number, long: number, he
 }
 
 const findPolygon = (points: Point[][], currPoint: Point) => {
-    if (isCoordinatesInPolygon(points, currPoint.lat - pointAccuracy, currPoint.long, currPoint.alt)) {
-        findPolygon(points, points[currPoint.lat - pointAccuracy][currPoint.long]);
+    polygons[currrPolygonIndex].push(points[currPoint.lat][currPoint.long]);
+    visited[currPoint.lat][currPoint.long] = true;
+
+    if (isCoordinatesInPolygon(points, parseFloat((currPoint.lat - pointAccuracy).toFixed(2)), currPoint.long, currPoint.alt)) {
+        findPolygon(points, points[parseFloat((currPoint.lat - pointAccuracy).toFixed(2))][currPoint.long]);
     }
     
-    if (isCoordinatesInPolygon(points, currPoint.lat + pointAccuracy, currPoint.long, currPoint.alt)) {
-        findPolygon(points, points[currPoint.lat + pointAccuracy][currPoint.long]);
+    if (isCoordinatesInPolygon(points, parseFloat((currPoint.lat + pointAccuracy).toFixed(2)), currPoint.long, currPoint.alt)) {
+        findPolygon(points, points[parseFloat((currPoint.lat + pointAccuracy).toFixed(2))][currPoint.long]);
     }
 
-    if (isCoordinatesInPolygon(points, currPoint.lat, currPoint.long - pointAccuracy, currPoint.alt)) {
-        findPolygon(points, points[currPoint.lat - pointAccuracy][currPoint.long - pointAccuracy]);
+    if (isCoordinatesInPolygon(points, currPoint.lat, parseFloat((currPoint.long - pointAccuracy).toFixed(2)), currPoint.alt)) {
+        findPolygon(points, points[currPoint.lat][parseFloat((currPoint.long - pointAccuracy).toFixed(2))]);
     }
 
-    if (isCoordinatesInPolygon(points, currPoint.lat, currPoint.long + pointAccuracy, currPoint.alt)) {
-        findPolygon(points, points[currPoint.lat - pointAccuracy][currPoint.long + pointAccuracy]);
+    if (isCoordinatesInPolygon(points, currPoint.lat, parseFloat((currPoint.long + pointAccuracy).toFixed(2)), currPoint.alt)) {
+        findPolygon(points, points[currPoint.lat][parseFloat((currPoint.long + pointAccuracy).toFixed(2))]);
     }
 }
 
