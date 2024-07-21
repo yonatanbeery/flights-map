@@ -39,7 +39,7 @@ const getMinPoint = (points: Point[]):Point => {
     return minPoint
 }
 
-export const sortBorderPoints = (borderPoints: Point[]):Point[] => {
+export const sortBorderPoints = (borderPoints: Point[]):any[] => {
     if(borderPoints.length < 4) return borderPoints;
     const polygonPoints = convexHull(borderPoints);
     
@@ -56,6 +56,5 @@ export const sortBorderPoints = (borderPoints: Point[]):Point[] => {
     leftPoints.sort((a,b) => a.lat < b.lat ? 1 : 0).forEach(point => sortedPoints.push(point));
     rightPoints.sort((a,b) => a.lat > b.lat ? 1 : 0).forEach(point => sortedPoints.push(point));
     
-    //{lat: polygon[lat][long].lat, lng: polygon[lat][long].long, alt: polygon[lat][long].alt}
-    return sortedPoints
+    return sortedPoints.map(point => ({lat: point.lat, lng: point.long, alt: point.alt}))
 }

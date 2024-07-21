@@ -18,10 +18,13 @@ export class SimpleMap extends Component {
 
     const polygons:{lat:number, lng:number, alt: number}[][] = [
       [
-        { lat: 34.61, lng: 36.02, alt: 1500 },
-        { lat: 34.61, lng: 36.14, alt: 1500 },
+        { lat: 34.61, lng: 36.01, alt: 1500 },
+        { lat: 34.62, lng: 36.01, alt: 1500 },
+        { lat: 34.72, lng: 36.08, alt: 1500 },
         { lat: 34.72, lng: 36.14, alt: 1500 },
-        { lat: 34.72, lng: 36.02, alt: 1500 },
+        { lat: 34.7, lng: 36.14, alt: 1500 },
+        { lat: 34.69, lng: 36.13, alt: 1500 },
+        { lat: 34.61, lng: 36.02, alt: 1500 }
       ], [
         { lat: 34.51, lng: 36.02, alt: 1500 },
         { lat: 34.51, lng: 36.14, alt: 1500 },
