@@ -16,6 +16,8 @@ const run = async () => {
   const thinnedPolygons = polygons.map(polygon => getBorderPoints(polygon))
   console.log("polygons");
   const sortedPolygons = []
+
+  thinnedPolygons.sort((a, b) => a[0].alt < b[0].alt ? 1 : 0)
   Object.keys(thinnedPolygons).forEach(polygon => {
     sortedPolygons.push(sortBorderPoints(thinnedPolygons[polygon]));
   })

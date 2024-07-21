@@ -30,7 +30,7 @@ const getMaxHeightInRadius = (point: Point, heights: Point[][]):Point => {
   return maxPoint
 }
 
-const getVectorDistance = (v1, v2) => {
+export const getVectorDistance = (v1, v2) => {
   return Math.sqrt( v1*v1 + v2*v2 );
 }
 
@@ -42,10 +42,10 @@ const KMtoLat = 1 / 111.2
 const longToKMeter = 93.17
 const KMtoLong = 1 / 93.17
 
-const getLatDistance = (p1:number, p2:number) => {
+export const getLatDistance = (p1:number, p2:number) => {
 return Math.abs(p1 - p2) * latToKMeter
 }
 
-const getLongDistance = (p1:number, p2:number) => {
+export const getLongDistance = (p1:number, p2:number) => {
 return Math.abs(p1 - p2) * longToKMeter
 }

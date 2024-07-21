@@ -20,6 +20,7 @@ export class SimpleMap extends Component {
       <Polygon positions={polygon}>
       <Popup>
         minimum height: {polygon[0].alt}
+        points: {polygon.map((p) => (`[${p.lat}, ${p.lng}] `))}
       </Popup>
     </Polygon>
     )
