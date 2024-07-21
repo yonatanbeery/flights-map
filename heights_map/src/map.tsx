@@ -1,11 +1,11 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../polygonsCoordinates.json";
 
 interface Point {
   lat: number;
   lng:number;
-  alt: number
+  alt: number;
 }
 
 const getColor = (alt: number):string => {
@@ -30,28 +30,33 @@ const getColor = (alt: number):string => {
   else if(alt===10000) return "#990000"
   else if(alt===10500) return "#351c75"
   else if(alt===11000) return "#FFFFFF"
-
   else return ""
 }
 
-export class SimpleMap extends Component {
-  state = {
-    center: { lat: 34.2, lng: 36.02},
-    zoom: 10,
-  };
+  export const SimpleMap = () => {
+    const state = {
+      center: { lat: 34.2, lng: 36.02},
+      zoom: 10,
+    };
 
-  render() {
+    const [cursorLocation, setCursorLocation] = useState(state.center)
+
     const renderedPoints = (polygon: Point[]) => (
-      <Polygon positions={polygon} color={getColor(polygon[0].alt)}>
+      <Polygon eventHandlers={
+        {mousemove: (e) =>setCursorLocation(e.latlng)}
+      } positions={polygon} color={getColor(polygon[0].alt)} >
       <Popup>
         minimum height: {polygon[0].alt}
       </Popup>
     </Polygon>
     )
-
+    
     return (
-      <div style={{  height: '600px', width: '100%'}}>
-        <MapContainer center={this.state.center} zoom={this.state.zoom}>
+      <div>
+        <div style={{zIndex:"1000", height:"3rem", width:"11rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "44rem"}}>
+          lat: {cursorLocation.lat}, lng: {cursorLocation.lng}
+        </div>
+        <MapContainer center={state.center} zoom={state.zoom}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
@@ -61,5 +66,3 @@ export class SimpleMap extends Component {
       </div>
     );
   }
-}
-
