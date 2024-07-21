@@ -1,5 +1,7 @@
 import { Point } from "../utils/types";
 import { pointAccuracy } from "../utils/globals";
+import { convexHull } from "./convexHull";
+import {getVectorDistance, getLatDistance,getLongDistance} from "./radiusAbovePoint";
 
 export const getBorderPoints = (polygon: Point[][]):Point[] => {
     const borderPoints: any[] = [];
@@ -28,14 +30,24 @@ const isOnStrightBorderLine = (point: Point, polygon: Point[][]):boolean => {
     !!polygon[point.lat]?.[Number.parseFloat((point.long - pointAccuracy).toFixed(2))])
 }
 
-const sortBorderPoints = (borderPoints: Point[]):Point[] => {
-    const sortedPoints = []
-    const addPointToSortedArray = (point) => {
-        sortedPoints.push()
-    }
+//getVectorDistance(getLatDistance(lat, point.lat), getLongDistance(long, point.long))
+export const sortBorderPoints = (borderPoints: Point[]):any[] => {
+    if(borderPoints.length < 4) return borderPoints.map(point => ({lat: point.lat, lng: point.long, alt: point.alt}));
+    const polygonPoints = convexHull(borderPoints);
 
-    //{lat: polygon[lat][long].lat, lng: polygon[lat][long].long, alt: polygon[lat][long].alt}
-    borderPoints.forEach(_ => sortedPoints.push())
-    borderPoints.forEach(point => addPointToSortedArray(point))
-    return sortedPoints
+    let northPoint = polygonPoints[0]
+    polygonPoints.forEach(point => {
+        if(point.lat > northPoint.lat || (point.lat === northPoint.lat && point.long < northPoint.long)) northPoint=point
+    })
+    const northPointIndex = polygonPoints.findIndex(p => p===northPoint)
+
+    polygonPoints.sort((a,b) => a.long < b.long ? 1 : 0)
+    const leftPoints = polygonPoints.slice(0, northPointIndex);
+    const rightPoints = polygonPoints.slice(northPointIndex, polygonPoints.length);
+    
+    const sortedPoints = []
+    leftPoints.sort((a,b) => a.lat < b.lat ? 1 : 0).forEach(point => sortedPoints.push(point));
+    rightPoints.sort((a,b) => a.lat > b.lat ? 1 : 0).forEach(point => sortedPoints.push(point));
+    
+    return polygonPoints.map(point => ({lat: point.lat, lng: point.long, alt: point.alt}))
 }

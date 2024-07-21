@@ -3,6 +3,8 @@ import { Point } from './utils/types';
 import {getMaxHeight} from './logic/radiusAbovePoint';
 import {getBorderPoints} from './logic/findGroups';
 import { divideToPolygons } from './logic/polygonDivision';
+import {sortBorderPoints} from "./logic/findGroups"
+import * as fs from "fs";
 
 const run = async () => {
   const heights:Point[][] = await readCoordinatesFromFile();
@@ -13,10 +15,13 @@ const run = async () => {
   console.log("thinning polygons");
   const thinnedPolygons = polygons.map(polygon => getBorderPoints(polygon)).filter((polygon) => polygon.length > 2);
   console.log("polygons");
+  const sortedPolygons = []
+
+  thinnedPolygons.sort((a, b) => a[0].alt < b[0].alt ? 1 : 0)
   Object.keys(thinnedPolygons).forEach(polygon => {
-    console.log({coord: thinnedPolygons[polygon]});
-  });
-  console.log(`divided to ${thinnedPolygons.length} polygons`);
+    sortedPolygons.push(sortBorderPoints(thinnedPolygons[polygon]));
+  })
+  fs.writeFileSync("../polygonsCoordinates.json",JSON.stringify(sortedPolygons))
 }
 
 run()

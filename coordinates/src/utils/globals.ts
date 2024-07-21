@@ -1,5 +1,5 @@
 export const warningRadius = 10; //In KM Unit
-export const layersHeightDiff = 500 //In Meters Unit
+export const layersHeightDiff = 500 //In Feet Unit
 
 export const areaLimits = {
     min: {
