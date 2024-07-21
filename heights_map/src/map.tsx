@@ -1,5 +1,6 @@
 import { Component } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
+import polygons from '../polygons.json';
 
 export class SimpleMap extends Component {
   state = {
@@ -8,6 +9,8 @@ export class SimpleMap extends Component {
   };
 
   render() {
+    console.log(polygons);
+
     const renderedPoints = (polygon: {lat: number, lng:number, alt: number}[]) => (
       <Polygon positions={polygon}>
       <Popup>
@@ -15,21 +18,6 @@ export class SimpleMap extends Component {
       </Popup>
     </Polygon>
     )
-
-    const polygons:{lat:number, lng:number, alt: number}[][] = [
-      [
-        { lat: 34.61, lng: 36.02, alt: 1500 },
-        { lat: 34.61, lng: 36.14, alt: 1500 },
-        { lat: 34.72, lng: 36.14, alt: 1500 },
-        { lat: 34.72, lng: 36.02, alt: 1500 },
-      ], [
-        { lat: 34.51, lng: 36.02, alt: 1500 },
-        { lat: 34.51, lng: 36.14, alt: 1500 },
-        { lat: 34.61, lng: 36.14, alt: 1500 },
-        { lat: 34.61, lng: 36.02, alt: 1500 },
-      ]
-      
-    ]
 
     return (
       <div style={{  height: '600px', width: '100%'}}>

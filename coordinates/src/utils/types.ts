@@ -13,3 +13,9 @@ export type getAltitudeResponsePoint = {
 export type getAltitudeResponse = {
   results: getAltitudeResponsePoint[]
 }
+
+export type PolygonPoint = {
+  lat: number,
+  lng: number, 
+  alt: number
+}
