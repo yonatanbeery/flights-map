@@ -29,18 +29,8 @@ const isOnStrightBorderLine = (point: Point, polygon: Point[][]):boolean => {
     !!polygon[point.lat]?.[Number.parseFloat((point.long - pointAccuracy).toFixed(2))])
 }
 
-const getMinPoint = (points: Point[]):Point => {
-    let minPoint = points[0]
-
-    points.forEach((point) => {
-        if(point.lat < minPoint.lat) minPoint = point
-    })
-
-    return minPoint
-}
-
 export const sortBorderPoints = (borderPoints: Point[]):any[] => {
-    if(borderPoints.length < 4) return borderPoints;
+    if(borderPoints.length < 4) return borderPoints.map(point => ({lat: point.lat, lng: point.long, alt: point.alt}));
     const polygonPoints = convexHull(borderPoints);
     
     let northPoint = polygonPoints[0]
