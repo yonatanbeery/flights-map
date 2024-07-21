@@ -35,27 +35,6 @@ export const sortBorderPoints = (borderPoints: Point[]):any[] => {
     if(borderPoints.length < 4) return borderPoints.map(point => ({lat: point.lat, lng: point.long, alt: point.alt}));
     const polygonPoints = convexHull(borderPoints);
 
-    // borderPoints.forEach(point => {
-    //     if(!polygonPoints.find(polyPoint => polyPoint === point)) {
-    //         let closestPointIndex = 0;
-    //         let closestPointDistance = getVectorDistance(getLatDistance(polygonPoints[0].lat, point.lat), getLongDistance(polygonPoints[0].long, point.long))
-    //         for(let i = 0; i < polygonPoints.length; i++) {
-    //             const newDistance = getVectorDistance(getLatDistance(polygonPoints[i].lat, point.lat), getLongDistance(polygonPoints[i].long, point.long))
-    //             if(newDistance<closestPointDistance) {
-    //                 closestPointDistance = newDistance;
-    //                 closestPointIndex = i;
-    //             }
-    //         }
-
-    //         const previousPointIndex = closestPointIndex == 0 ? polygonPoints.length - 1 : closestPointIndex - 1
-    //         const nextPointIndex = closestPointIndex == polygonPoints.length - 1 ? 0 : closestPointIndex + 1            
-            
-    //         const previousPointDistance = getVectorDistance(getLatDistance(polygonPoints[previousPointIndex].lat, point.lat), getLongDistance(polygonPoints[previousPointIndex].long, point.long))
-    //         const nextPointDistance = getVectorDistance(getLatDistance(polygonPoints[nextPointIndex].lat, point.lat), getLongDistance(polygonPoints[nextPointIndex].long, point.long))
-    //         polygonPoints.splice(nextPointDistance < previousPointDistance ? nextPointIndex : previousPointIndex,0,point);
-    //     }
-    //     })
-
     let northPoint = polygonPoints[0]
     polygonPoints.forEach(point => {
         if(point.lat > northPoint.lat || (point.lat === northPoint.lat && point.long < northPoint.long)) northPoint=point
