@@ -30,7 +30,6 @@ const isOnStrightBorderLine = (point: Point, polygon: Point[][]):boolean => {
     !!polygon[point.lat]?.[Number.parseFloat((point.long - pointAccuracy).toFixed(2))])
 }
 
-//getVectorDistance(getLatDistance(lat, point.lat), getLongDistance(long, point.long))
 export const sortBorderPoints = (borderPoints: Point[]):any[] => {
     if(borderPoints.length < 4) return borderPoints.map(point => ({lat: point.lat, lng: point.long, alt: point.alt}));
     const polygonPoints = convexHull(borderPoints);

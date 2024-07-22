@@ -53,7 +53,7 @@ const getColor = (alt: number):string => {
     
     return (
       <div>
-        <div style={{zIndex:"1000", height:"3rem", width:"11rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "44rem"}}>
+        <div style={{zIndex:"1000", height:"3rem", width:"11rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "42rem"}}>
           lat: {cursorLocation.lat}, lng: {cursorLocation.lng}
         </div>
         <MapContainer center={state.center} zoom={state.zoom}>
