@@ -5,6 +5,7 @@ import { getBorderPoints } from './logic/findGroups';
 import { divideToPolygons } from './logic/polygonDivision';
 import { sortBorderPoints } from './logic/findGroups';
 import { calculatePolygonArea } from './logic/polygonSize';
+import { processPolygons } from './logic/polygonMerge';
 import * as fs from 'fs';
 
 const run = async () => {
@@ -27,9 +28,12 @@ const run = async () => {
   );
   console.log(`${filteredPolygons.length} after filter`);
 
+  const mergedPolygons = processPolygons(filteredPolygons);
+  console.log(`${mergedPolygons.length} after mergeing`);
+
   fs.writeFileSync(
     '../polygonsCoordinates.json',
-    JSON.stringify(filteredPolygons)
+    JSON.stringify(mergedPolygons)
   );
 };
 
