@@ -10,6 +10,7 @@ const run = async () => {
   const heights:Point[][] = await readCoordinatesFromFile();
   console.log("calculating max hights");
   const maxs = getMaxHeight(heights);
+  printMaxHeightInAllPoints(maxs)
   console.log("dividing to polygons");
   const polygons = divideToPolygons(maxs);
   console.log("thinning polygons");
@@ -22,6 +23,18 @@ const run = async () => {
     sortedPolygons.push(sortBorderPoints(thinnedPolygons[polygon]));
   })
   fs.writeFileSync("../polygonsCoordinates.json",JSON.stringify(sortedPolygons))
+  
+}
+
+const printMaxHeightInAllPoints = (maxs: Point[][]) => {
+  const maxsJson:Record<string, Record<string, Point>> = {}
+  Object.keys(maxs).forEach((lat) => {
+    if (!maxsJson[lat]) maxsJson[lat] = {}
+    Object.keys(maxs[lat]).forEach((long) => {
+      maxsJson[lat][long] = {lat: Number.parseFloat(lat), long: Number.parseFloat(long), alt: maxs[lat][long].alt}
+    })
+  })
+  fs.writeFileSync("../maxHeights.json",JSON.stringify(maxsJson))
 }
 
 run()
