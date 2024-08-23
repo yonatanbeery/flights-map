@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { SimpleMap } from './map.tsx'
+import { SimpleMap } from './utils/map.tsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

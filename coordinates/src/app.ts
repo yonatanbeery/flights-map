@@ -27,11 +27,11 @@ const run = async () => {
 }
 
 const printMaxHeightInAllPoints = (maxs: Point[][]) => {
-  const maxsJson:Record<string, Record<string, Point>> = {}
+  const maxsJson:Record<string, Record<string, {lat: number, lng:number, alt:number}>> = {}
   Object.keys(maxs).forEach((lat) => {
     if (!maxsJson[lat]) maxsJson[lat] = {}
     Object.keys(maxs[lat]).forEach((long) => {
-      maxsJson[lat][long] = {lat: Number.parseFloat(lat), long: Number.parseFloat(long), alt: maxs[lat][long].alt}
+      maxsJson[lat][long] = {lat: Number.parseFloat(lat), lng: Number.parseFloat(long), alt: maxs[lat][long].alt}
     })
   })
   fs.writeFileSync("../maxHeights.json",JSON.stringify(maxsJson))

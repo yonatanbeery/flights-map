@@ -1,6 +1,9 @@
 import { Component, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
-import polygons from "../../polygonsCoordinates.json";
+import polygons from "../../../polygonsCoordinates.json";
+import pointHeights from "../../../maxHeights.json";
+import MultipleSelectCheckmarks from './multipleSelect';
+import { Typography } from '@mui/material';
 
 interface Point {
   lat: number;
@@ -8,8 +11,11 @@ interface Point {
   alt: number;
 }
 
+const allPoints = pointHeights as Record<string, Record<string, Point>>
+
 const getColor = (alt: number):string => {
-  if(alt === 1000) return "#0b5394"
+  if(alt === 500) return ""
+  else if(alt === 1000) return "#0b5394"
   else if(alt===1500) return "#3d85c6"
   else if(alt===2000) return "#6fa8dc"
   else if(alt===2500) return "#38761d"
@@ -29,8 +35,7 @@ const getColor = (alt: number):string => {
   else if(alt===9500) return "#741b47"
   else if(alt===10000) return "#990000"
   else if(alt===10500) return "#351c75"
-  else if(alt===11000) return "#FFFFFF"
-  else return ""
+  else return "#FFFFFF"
 }
 
   export const SimpleMap = () => {
@@ -39,29 +44,42 @@ const getColor = (alt: number):string => {
       zoom: 10,
     };
 
+    const heightOptions = Array.from({length: 22}, (_, i) => i*500)    
     const [cursorLocation, setCursorLocation] = useState(state.center)
+    const [filteredHeights, setFilteredHeights] = useState(heightOptions)
 
     const renderedPoints = (polygon: Point[]) => (
       <Polygon eventHandlers={
-        {mousemove: (e) =>setCursorLocation(e.latlng)}
+        {mousemove: (e) => setCursorLocation(e.latlng)}
       } positions={polygon} color={getColor(polygon[0].alt)} >
       <Popup>
         minimum height: {polygon[0].alt}
       </Popup>
     </Polygon>
     )
-    
+
     return (
       <div>
-        <div style={{zIndex:"1000", height:"3rem", width:"11rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "44rem"}}>
-          lat: {cursorLocation.lat}, lng: {cursorLocation.lng}
+        <div style={{zIndex:"1000", width:"11rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "10rem"}}>
+          <Typography>
+          lat: {cursorLocation.lat.toFixed(6)}
+          </Typography>
+          <Typography>
+          lng: {cursorLocation.lng.toFixed(6)}
+          </Typography>
+          <Typography>
+          alt: {allPoints[cursorLocation.lat.toFixed(2).toString()]?.[cursorLocation.lng.toFixed(2).toString()]?.alt || 0}
+          </Typography>
+          <div>
+            <MultipleSelectCheckmarks options={heightOptions} filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
+          </div>
         </div>
         <MapContainer center={state.center} zoom={state.zoom}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
-          {polygons.map((polygon => renderedPoints(polygon)))}
+          {polygons.filter((polygon: Point[]) => filteredHeights.includes(polygon[0].alt)).map((polygon => renderedPoints(polygon)))}
         </MapContainer>
       </div>
     );
