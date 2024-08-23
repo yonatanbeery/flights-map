@@ -57,7 +57,7 @@ export default function MultipleSelectCheckmarks(props: MultipleSelectProps) {
           multiple
           value={props.filteredHeights}
           onChange={handleChange}
-          input={<OutlinedInput label="Tag" />}
+          input={<OutlinedInput label="height" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >

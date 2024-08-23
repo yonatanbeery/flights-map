@@ -1,4 +1,4 @@
-import { Component, useState } from 'react';
+import { Component, useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../../polygonsCoordinates.json";
 import pointHeights from "../../../maxHeights.json";
@@ -15,9 +15,9 @@ const allPoints = pointHeights as Record<string, Record<string, Point>>
 
 const getColor = (alt: number):string => {
   if(alt === 500) return ""
-  else if(alt === 1000) return "#0b5394"
+  else if(alt === 1000) return "#6fa8dc"
   else if(alt===1500) return "#3d85c6"
-  else if(alt===2000) return "#6fa8dc"
+  else if(alt===2000) return "#0b5394"
   else if(alt===2500) return "#38761d"
   else if(alt===3000) return "#6aa84f"
   else if(alt===3500) return "#93c47d"
@@ -44,19 +44,25 @@ const getColor = (alt: number):string => {
       zoom: 10,
     };
 
-    const heightOptions = Array.from({length: 22}, (_, i) => i*500)    
+    const heightOptions = Array.from({length: 21}, (_, i) => (i+1)*500)    
     const [cursorLocation, setCursorLocation] = useState(state.center)
-    const [filteredHeights, setFilteredHeights] = useState(heightOptions)
+    const [filteredHeights, setFilteredHeights] = useState<number[]>(heightOptions)
+    const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>(polygons)
 
-    const renderedPoints = (polygon: Point[]) => (
-      <Polygon eventHandlers={
+    useEffect(() => { 
+      setPresentedPolygons(polygons.filter((polygon: Point[]) => filteredHeights.includes(polygon[0].alt)))
+    },[filteredHeights])
+    
+    const renderedPoints = (polygon: Point[]) => {  
+      return(
+      <Polygon key={`${polygon[0].alt}-${polygon[0].lat}-${polygon[0].lng}`} eventHandlers={
         {mousemove: (e) => setCursorLocation(e.latlng)}
       } positions={polygon} color={getColor(polygon[0].alt)} >
       <Popup>
         minimum height: {polygon[0].alt}
       </Popup>
     </Polygon>
-    )
+    )}
 
     return (
       <div>
@@ -79,8 +85,7 @@ const getColor = (alt: number):string => {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
-          {polygons.filter((polygon: Point[]) => filteredHeights.includes(polygon[0].alt)).map((polygon => renderedPoints(polygon)))}
+          {presentedPolygons.map((polygon => renderedPoints(polygon)))}
         </MapContainer>
-      </div>
-    );
+      </div>);
   }
