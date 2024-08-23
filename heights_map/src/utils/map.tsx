@@ -48,7 +48,7 @@ const getColor = (alt: number):string => {
     const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([])
 
     useEffect(() => { 
-      setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt > filteredHeights[0] && polygon[0].alt < filteredHeights[1]))
+      setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt >= filteredHeights[0] && polygon[0].alt <= filteredHeights[1]))
     },[filteredHeights])
     
     const renderedPoints = (polygon: Point[]) => {  
