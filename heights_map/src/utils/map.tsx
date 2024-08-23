@@ -15,39 +15,38 @@ const allPoints = pointHeights as Record<string, Record<string, Point>>
 
 const getColor = (alt: number):string => {
   if(alt === 500) return ""
-  else if(alt === 1000) return "#6fa8dc"
-  else if(alt===1500) return "#3d85c6"
-  else if(alt===2000) return "#0b5394"
-  else if(alt===2500) return "#38761d"
-  else if(alt===3000) return "#6aa84f"
-  else if(alt===3500) return "#93c47d"
-  else if(alt===4000) return "#ffe599"
-  else if(alt===4500) return "#ffd966"
-  else if(alt===5000) return "#f1c232"
-  else if(alt===5500) return "#f6b26b"
-  else if(alt===6000) return "#e69138"
-  else if(alt===6500) return "#c27ba0"
-  else if(alt===7000) return "#e06666"
-  else if(alt===7500) return "#8e7cc3"
-  else if(alt===8000) return "#a64d79"
-  else if(alt===8500) return "#cc0000"
-  else if(alt===9000) return "#674ea7"
-  else if(alt===9500) return "#741b47"
-  else if(alt===10000) return "#990000"
-  else if(alt===10500) return "#351c75"
+  else if(alt === 1000) return "#48c9b0"
+  else if(alt===1500) return "#3498db"
+  else if(alt===2000) return "#2874a6"
+  else if(alt===2500) return "#1b4f72"
+  else if(alt===3000) return "#58d68d"
+  else if(alt===3500) return "#52be80"
+  else if(alt===4000) return "#27ae60"
+  else if(alt===4500) return "#1e8449"
+  else if(alt===5000) return "#f7dc6f"
+  else if(alt===5500) return "#f4d03f"
+  else if(alt===6000) return "#f5b041"
+  else if(alt===6500) return "#f39c12"
+  else if(alt===7000) return "#e67e22"
+  else if(alt===7500) return "#ec7063"
+  else if(alt===8000) return "#e74c3c"
+  else if(alt===8500) return "#c0392b"
+  else if(alt===9000) return "#a93226"
+  else if(alt===9500) return "#8e44ad"
+  else if(alt===10000) return "#4a235a"
   else return "#FFFFFF"
 }
 
   export const SimpleMap = () => {
     const state = {
-      center: { lat: 34.2, lng: 36.02},
-      zoom: 10,
+      center: { lat: 33.6, lng: 36.5},
+      zoom: 9,
     };
 
-    const heightOptions = Array.from({length: 21}, (_, i) => (i+1)*500)    
+    const heightOptions = Array.from({length: 20}, (_, i) => (i+1)*500)    
     const [cursorLocation, setCursorLocation] = useState(state.center)
-    const [filteredHeights, setFilteredHeights] = useState<number[]>(heightOptions)
-    const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>(polygons)
+    const [filteredHeights, setFilteredHeights] = useState<number[]>([])
+    const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([])
 
     useEffect(() => { 
       setPresentedPolygons(polygons.filter((polygon: Point[]) => filteredHeights.includes(polygon[0].alt)))
