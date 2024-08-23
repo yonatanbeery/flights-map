@@ -1,9 +1,9 @@
-import { Component, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../../polygonsCoordinates.json";
 import pointHeights from "../../../maxHeights.json";
-import MultipleSelectCheckmarks from './multipleSelect';
-import { Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
+import RangeSlider from './slider';
 
 interface Point {
   lat: number;
@@ -43,13 +43,12 @@ const getColor = (alt: number):string => {
       zoom: 9,
     };
 
-    const heightOptions = Array.from({length: 20}, (_, i) => (i+1)*500)    
     const [cursorLocation, setCursorLocation] = useState(state.center)
-    const [filteredHeights, setFilteredHeights] = useState<number[]>([])
+    const [filteredHeights, setFilteredHeights] = useState<number[]>([500,10000])
     const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([])
 
     useEffect(() => { 
-      setPresentedPolygons(polygons.filter((polygon: Point[]) => filteredHeights.includes(polygon[0].alt)))
+      setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt > filteredHeights[0] && polygon[0].alt < filteredHeights[1]))
     },[filteredHeights])
     
     const renderedPoints = (polygon: Point[]) => {  
@@ -65,7 +64,7 @@ const getColor = (alt: number):string => {
 
     return (
       <div>
-        <div style={{zIndex:"1000", width:"11rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "10rem"}}>
+        <Paper style={{zIndex:"1000", paddingLeft:"1rem", width:"17rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "37rem"}}>
           <Typography>
           lat: {cursorLocation.lat.toFixed(6)}
           </Typography>
@@ -76,9 +75,10 @@ const getColor = (alt: number):string => {
           alt: {allPoints[cursorLocation.lat.toFixed(2).toString()]?.[cursorLocation.lng.toFixed(2).toString()]?.alt || 0}
           </Typography>
           <div>
-            <MultipleSelectCheckmarks options={heightOptions} filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
+            <Typography>filter heights:</Typography>
+            <RangeSlider filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
           </div>
-        </div>
+        </Paper>
         <MapContainer center={state.center} zoom={state.zoom}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
