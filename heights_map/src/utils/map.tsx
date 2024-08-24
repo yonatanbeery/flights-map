@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../../polygonsCoordinates.json";
 import pointHeights from "../../../maxHeights.json";
-import { Paper, Typography } from '@mui/material';
+import { Box, IconButton, Input, List, ListItem, Paper, Typography } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RangeSlider from './slider';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 
 interface Point {
   lat: number;
@@ -37,19 +40,31 @@ const getColor = (alt: number):string => {
   else return "#FFFFFF"
 }
 
+interface DrawedPolygon {
+  name: string;
+  points: Point[];
+}
+
   export const SimpleMap = () => {
     const state = {
       center: { lat: 33.6, lng: 36.5},
       zoom: 9,
     };
 
-    const [cursorLocation, setCursorLocation] = useState(state.center)
-    const [filteredHeights, setFilteredHeights] = useState<number[]>([500,10000])
-    const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([])
+    const [cursorLocation, setCursorLocation] = useState(state.center);
+    const [filteredHeights, setFilteredHeights] = useState<number[]>([500,10000]);
+    const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([]);
+    const [drawedPolygons, setDrawedPolygons] = useState<DrawedPolygon[]>([]);
+    const [currentPolygon, setCurrentPolygon] = useState<DrawedPolygon>();
+    const [updateFlag, setUpdateFlag] = useState<number>(0);
 
     useEffect(() => { 
       setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt >= filteredHeights[0] && polygon[0].alt <= filteredHeights[1]))
     },[filteredHeights])
+
+    useEffect(() => {
+      document.addEventListener('keydown', handleKeyDown, { once: true });
+    },[updateFlag]);
     
     const renderedPoints = (polygon: Point[]) => {  
       return(
@@ -62,23 +77,87 @@ const getColor = (alt: number):string => {
     </Polygon>
     )}
 
+    const heightsInformation = (
+      <Paper style={{zIndex:"1000", paddingLeft:"1rem", width:"17rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "37rem"}}>
+      <Typography>
+      lat: {cursorLocation.lat.toFixed(6)}
+      </Typography>
+      <Typography>
+      lng: {cursorLocation.lng.toFixed(6)}
+      </Typography>
+      <Typography>
+      alt: {allPoints[cursorLocation.lat.toFixed(2).toString()]?.[cursorLocation.lng.toFixed(2).toString()]?.alt || 0}
+      </Typography>
+      <div>
+        <Typography>filter heights:</Typography>
+        <RangeSlider filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
+      </div>
+    </Paper>
+    );
+
+    const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
+      <ListItem>
+      <Box key={`${editPolygon.name}-${index}`} sx={{width:"100%", background:`${currentPolygon === editedPolygon ? "#3498db" : "white"}`}}>
+        <IconButton aria-label="edit" onClick={() => setCurrentPolygon(editedPolygon)}>
+          <EditLocationAltIcon/>
+        </IconButton>
+        <Input sx={{width:"5rem"}} value={editedPolygon.name} onChange={(text) => {
+          const newPolygon = {...editedPolygon, name:text.target.value};
+          setDrawedPolygons(drawedPolygons.map(polygon => {return polygon === editedPolygon ? newPolygon : polygon}));
+          setCurrentPolygon(newPolygon);
+        }
+          }/>
+          {editedPolygon.points.map(point => 
+            <Box key={`${editedPolygon.name}-${point}`} sx={{display:"flex", flexDirection:"row"}}>
+              <IconButton aria-label="remove" onClick={() => {
+                const newPolygon = {name: editedPolygon.name, points:editedPolygon.points.filter(polygonPoint => polygonPoint.lat !== point.lat || polygonPoint.lng !== point.lng)};
+                setDrawedPolygons(drawedPolygons.map(polygon => 
+                   polygon === currentPolygon ? newPolygon : polygon
+                ))
+                setCurrentPolygon(newPolygon);
+              }}>
+                <DeleteIcon/>
+              </IconButton>
+              <Typography>
+              lat: {point.lat}, lng: {point.lng}
+              </Typography>
+            </Box>
+          )}
+        <hr/>
+      </Box>
+      </ListItem>
+    )
+
+    const polygonsDrawing = (
+      <Paper style={{zIndex:"1000", padding:"1rem", width:"19rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "5rem"}}>
+      <Typography>
+        Drawed polygons:
+      </Typography>
+      <List sx={{maxHeight:"20rem", overflow: 'auto',}}>
+      {drawedPolygons.map((polygon, index) => editPolygon(polygon, index))}
+      </List>
+      <IconButton aria-label="add" onClick={() => setDrawedPolygons([...drawedPolygons, {name:"", points:[]}])}>
+        <AddCircleOutlineIcon />
+      </IconButton>
+      </Paper>
+    );
+    
+    const handleKeyDown = (event: any) => {
+      console.log({drawedPolygons});
+      if (event.key === 'Enter') {
+        const newPolygon = {name: currentPolygon?.name || "", points:[...currentPolygon?.points || [], {lat: +cursorLocation.lat.toFixed(6), lng: +cursorLocation.lng.toFixed(6), alt: 0}]};
+        setDrawedPolygons(drawedPolygons.map(polygon => 
+           polygon === currentPolygon ? newPolygon : polygon
+        ))
+        setCurrentPolygon(newPolygon);
+      }
+      setUpdateFlag(updateFlag+1);
+    }
+
     return (
       <div>
-        <Paper style={{zIndex:"1000", paddingLeft:"1rem", width:"17rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "37rem"}}>
-          <Typography>
-          lat: {cursorLocation.lat.toFixed(6)}
-          </Typography>
-          <Typography>
-          lng: {cursorLocation.lng.toFixed(6)}
-          </Typography>
-          <Typography>
-          alt: {allPoints[cursorLocation.lat.toFixed(2).toString()]?.[cursorLocation.lng.toFixed(2).toString()]?.alt || 0}
-          </Typography>
-          <div>
-            <Typography>filter heights:</Typography>
-            <RangeSlider filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
-          </div>
-        </Paper>
+        {polygonsDrawing}
+        {heightsInformation}
         <MapContainer center={state.center} zoom={state.zoom}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
