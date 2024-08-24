@@ -1,18 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../../polygonsCoordinates.json";
 import pointHeights from "../../../maxHeights.json";
-import { Box, IconButton, Input, List, ListItem, Paper, Typography } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { Paper, Typography } from '@mui/material';
 import RangeSlider from './slider';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-
-interface Point {
-  lat: number;
-  lng:number;
-  alt: number;
-}
+import { PolygonDrawing } from './drawPolygons';
+import { DrawedPolygon, Point } from './types';
 
 const allPoints = pointHeights as Record<string, Record<string, Point>>
 
@@ -40,11 +33,6 @@ const getColor = (alt: number):string => {
   else return "#FFFFFF"
 }
 
-interface DrawedPolygon {
-  name: string;
-  points: Point[];
-}
-
   export const SimpleMap = () => {
     const state = {
       center: { lat: 33.6, lng: 36.5},
@@ -55,18 +43,10 @@ interface DrawedPolygon {
     const [filteredHeights, setFilteredHeights] = useState<number[]>([500,10000]);
     const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([]);
     const [drawedPolygons, setDrawedPolygons] = useState<DrawedPolygon[]>([]);
-    const [currentPolygon, setCurrentPolygon] = useState<DrawedPolygon>();
-    const [updateFlag, setUpdateFlag] = useState<number>(0);
-    const cursorRef = useRef();
-    cursorRef.current = cursorLocation as any;
 
     useEffect(() => { 
       setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt >= filteredHeights[0] && polygon[0].alt <= filteredHeights[1]))
     },[filteredHeights])
-
-    useEffect(() => {
-      document.addEventListener('keydown', handleKeyDown, { once: true });
-    },[updateFlag]);
     
     const renderedPoints = (polygon: Point[]) => {  
       return(
@@ -97,70 +77,11 @@ interface DrawedPolygon {
     </Paper>
     );
 
-    const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
-      <ListItem>
-      <Box key={`${editPolygon.name}-${index}`} sx={{width:"100%", background:`${currentPolygon === editedPolygon ? "#3498db" : "white"}`}}>
-        <IconButton aria-label="edit" onClick={() => setCurrentPolygon(editedPolygon)}>
-          <EditLocationAltIcon/>
-        </IconButton>
-        <Input sx={{width:"5rem"}} value={editedPolygon.name} onChange={(text) => {
-          const newPolygon = {...editedPolygon, name:text.target.value};
-          setDrawedPolygons(drawedPolygons.map(polygon => {return polygon === editedPolygon ? newPolygon : polygon}));
-          setCurrentPolygon(newPolygon);
-        }
-          }/>
-          {editedPolygon.points.map((point, index) => 
-            <Box key={`${editedPolygon.name}-${index}`} sx={{display:"flex", flexDirection:"row"}}>
-              <IconButton aria-label="remove" onClick={() => {
-                const newPolygon = {name: editedPolygon.name, points:editedPolygon.points.filter(polygonPoint => polygonPoint.lat !== point.lat || polygonPoint.lng !== point.lng)};
-                setDrawedPolygons(drawedPolygons.map(polygon => 
-                   polygon === currentPolygon ? newPolygon : polygon
-                ))
-                setCurrentPolygon(newPolygon);
-                document.removeEventListener('keydown', handleKeyDown);
-                setUpdateFlag(updateFlag+1);
-              }}>
-                <DeleteIcon/>
-              </IconButton>
-              <Typography>
-              lat: {point.lat}, lng: {point.lng}
-              </Typography>
-            </Box>
-          )}
-        <hr/>
-      </Box>
-      </ListItem>
-    )
 
-    const polygonsDrawing = (
-      <Paper style={{zIndex:"1000", padding:"1rem", width:"19rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "5rem"}}>
-      <Typography>
-        Drawed polygons:
-      </Typography>
-      <List sx={{maxHeight:"25rem", overflow: 'auto',}}>
-      {drawedPolygons.map((polygon, index) => editPolygon(polygon, index))}
-      </List>
-      <IconButton aria-label="add" onClick={() => setDrawedPolygons([...drawedPolygons, {name:"", points:[]}])}>
-        <AddCircleOutlineIcon />
-      </IconButton>
-      </Paper>
-    );
-    
-    const handleKeyDown = (event: any) => {
-      if (event.key === 'Enter') {
-        const point = cursorRef.current as any;
-        const newPolygon = {name: currentPolygon?.name || "", points:[...currentPolygon?.points || [], {lat: +point.lat.toFixed(6), lng: +point.lng.toFixed(6), alt: 0}]};
-        setDrawedPolygons(drawedPolygons.map(polygon => 
-           polygon === currentPolygon ? newPolygon : polygon
-        ))
-        setCurrentPolygon(newPolygon);
-      }
-      setUpdateFlag(updateFlag+1);
-    }
 
     return (
       <div>
-        {polygonsDrawing}
+        <PolygonDrawing cursorLocation={cursorLocation} drawedPolygons={drawedPolygons} setDrawedPolygons={setDrawedPolygons}/>
         {heightsInformation}
         <MapContainer center={state.center} zoom={state.zoom}>
           <TileLayer
