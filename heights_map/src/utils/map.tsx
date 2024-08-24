@@ -30,6 +30,7 @@ const getColor = (alt: number):string => {
   else if(alt===9000) return "#a93226"
   else if(alt===9500) return "#8e44ad"
   else if(alt===10000) return "#4a235a"
+  else if(alt===99999) return "#000000"
   else return "#FFFFFF"
 }
 
@@ -48,13 +49,13 @@ const getColor = (alt: number):string => {
       setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt >= filteredHeights[0] && polygon[0].alt <= filteredHeights[1]))
     },[filteredHeights])
     
-    const renderedPoints = (polygon: Point[]) => {  
+    const renderedPoints = (polygon: Point[], description: string) => {  
       return(
       <Polygon key={`${polygon[0].alt}-${polygon[0].lat}-${polygon[0].lng}`} eventHandlers={
         {mousemove: (e) => setCursorLocation(e.latlng)}
       } positions={polygon} color={getColor(polygon[0].alt)} >
       <Popup>
-        minimum height: {polygon[0].alt}
+        {description}
       </Popup>
     </Polygon>
     )}
@@ -88,8 +89,8 @@ const getColor = (alt: number):string => {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
-          {presentedPolygons.map((polygon => renderedPoints(polygon)))}
-          {drawedPolygons.map((polygon => polygon.points.length > 2 && renderedPoints(polygon.points)))}
+          {presentedPolygons.map((polygon => renderedPoints(polygon, `minimum height: ${polygon[0].alt}`)))}
+          {drawedPolygons.map((polygon => polygon.points.length > 2 && renderedPoints(polygon.points, `${polygon.name}`)))}
         </MapContainer>
       </div>);
   }

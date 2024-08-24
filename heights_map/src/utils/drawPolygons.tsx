@@ -59,7 +59,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
           const point = cursorRef.current as any as LatLng;
           const polygons = polygonsRef.current as any as DrawedPolygon[];
           const currentEditedPolygon = currentRef.current as any as DrawedPolygon;
-          const newPolygon = {name: currentEditedPolygon.name || "", points:[...currentEditedPolygon.points || [], {lat: +point.lat.toFixed(6), lng: +point.lng.toFixed(6), alt: 0}]};
+          const newPolygon = {name: currentEditedPolygon.name || "", points:[...currentEditedPolygon.points || [], {lat: +point.lat.toFixed(6), lng: +point.lng.toFixed(6), alt: 99999}]};
           props.setDrawedPolygons(polygons.map(polygon => 
              polygon === currentEditedPolygon ? newPolygon : polygon
           ))
