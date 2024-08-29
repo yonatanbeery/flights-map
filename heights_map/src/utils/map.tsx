@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../../polygonsCoordinates.json";
-import pointHeights from "../../../maxHeights.json";
 import { Paper, Typography } from '@mui/material';
 import RangeSlider from './slider';
 import { PolygonDrawing } from './drawPolygons';
 import { DrawedPolygon, Point } from './types';
-
-const allPoints = pointHeights as Record<string, Record<string, Point>>
 
 const getColor = (alt: number):string => {
   if(alt === 500) return ""
@@ -107,7 +104,7 @@ export const areaLimits = {
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
           {backgroundPolygon}
-          {presentedPolygons.map((polygon => renderedPoints(polygon, `minimum height: ${polygon[0].alt}`)))}
+          {presentedPolygons.map((polygon => renderedPoints(polygon, `גובה מעפ״ש מינימלי ללא תוספת - ${polygon[0].alt} רגל`)))}
           {drawedPolygons.map((polygon => polygon.points.length > 2 && renderedPoints(polygon.points, `${polygon.name}`)))}
         </MapContainer>
       </div>);
