@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Input, List, ListItem, Paper, Typography } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {useEffect, useState } from "react";
 import { DrawedPolygon } from "./types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
@@ -14,17 +14,11 @@ interface DrawerProps {
 
 export const PolygonDrawing = (props: DrawerProps) => {
     const [currentPolygon, setCurrentPolygon] = useState<DrawedPolygon>();
-    const currentRef = useRef();
-    currentRef.current = currentPolygon as any;
-    const polygonsRef = useRef();
-    polygonsRef.current = props.drawedPolygons as any;
-    const cursorRef = useRef();
-    cursorRef.current = props.cursorLocation as any;
     
     const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
         <ListItem key={`${editPolygon.name}-${index}`}>
-        <Box sx={{width:"100%", background:`${currentRef.current === editedPolygon ? "#3498db" : "white"}`}}>
-          <IconButton aria-label="edit" onClick={() => currentRef.current === editedPolygon ? setCurrentPolygon({name: "", points:[]}) : setCurrentPolygon(editedPolygon)}>
+        <Box sx={{width:"100%", background:`${currentPolygon === editedPolygon ? "#3498db" : "white"}`}}>
+          <IconButton aria-label="edit" onClick={() => currentPolygon === editedPolygon ? setCurrentPolygon({name: "", points:[]}) : setCurrentPolygon(editedPolygon)}>
             <EditLocationAltIcon/>
           </IconButton>
           <Input sx={{width:"8rem"}} placeholder={"שם פוליגון"} value={editedPolygon.name} onChange={(text) => {
@@ -33,7 +27,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
             setCurrentPolygon(newPolygon);
           }
             }/>
-            {currentRef.current === editedPolygon && polygonPointsList(editedPolygon)}
+            {currentPolygon === editedPolygon && polygonPointsList(editedPolygon)}
         </Box>
         </ListItem>
       )
@@ -43,7 +37,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
           <IconButton aria-label="remove" onClick={() => {
             const newPolygon = {name: editedPolygon.name, points:editedPolygon.points.filter(polygonPoint => polygonPoint.lat !== point.lat || polygonPoint.lng !== point.lng)};
             props.setDrawedPolygons(props.drawedPolygons.map(polygon => 
-               polygon === currentRef.current ? newPolygon : polygon
+               polygon === currentPolygon ? newPolygon : polygon
             ))
             setCurrentPolygon(newPolygon);
           }}>
@@ -56,10 +50,12 @@ export const PolygonDrawing = (props: DrawerProps) => {
       )}
 
       const handleKeyDown = (event: any) => {
+        console.log({cursorLocation:props.cursorLocation});
+
         event.preventDefault();
-          const point = cursorRef.current as any as LatLng;
-          const polygons = polygonsRef.current as any as DrawedPolygon[];
-          const currentEditedPolygon = currentRef.current as any as DrawedPolygon;
+          const point = props.cursorLocation as any as LatLng;
+          const polygons = props.drawedPolygons as any as DrawedPolygon[];
+          const currentEditedPolygon = currentPolygon as any as DrawedPolygon;
           const newPolygon = {name: currentEditedPolygon.name || "", points:[...currentEditedPolygon.points || [], {lat: +point.lat.toFixed(6), lng: +point.lng.toFixed(6), alt: 99999}]};
           props.setDrawedPolygons(polygons.map(polygon => 
              polygon === currentEditedPolygon ? newPolygon : polygon
@@ -68,9 +64,11 @@ export const PolygonDrawing = (props: DrawerProps) => {
       }
 
       useEffect(() => {
-        // document.addEventListener('contextmenu', useCallback(handleKeyDown, [currentPolygon, props.drawedPolygons, props.cursorLocation]));
         document.addEventListener('contextmenu', handleKeyDown);
-      },[]);
+        return () => {
+          document.removeEventListener('contextmenu', handleKeyDown);
+        };
+      }, [currentPolygon, props.drawedPolygons, props.cursorLocation]);
   
       return (
         <Paper style={{zIndex:"1000", padding:"1rem", width:"19rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "5rem"}}>
