@@ -50,17 +50,14 @@ export const PolygonDrawing = (props: DrawerProps) => {
       )}
 
       const handleKeyDown = (event: any) => {
-        console.log({cursorLocation:props.cursorLocation});
-
         event.preventDefault();
-          const point = props.cursorLocation as any as LatLng;
-          const polygons = props.drawedPolygons as any as DrawedPolygon[];
-          const currentEditedPolygon = currentPolygon as any as DrawedPolygon;
-          const newPolygon = {name: currentEditedPolygon.name || "", points:[...currentEditedPolygon.points || [], {lat: +point.lat.toFixed(6), lng: +point.lng.toFixed(6), alt: 99999}]};
-          props.setDrawedPolygons(polygons.map(polygon => 
-             polygon === currentEditedPolygon ? newPolygon : polygon
+        if(currentPolygon) {
+          const newPolygon = {name: currentPolygon.name || "", points:[...currentPolygon.points || [], {lat: +props.cursorLocation.lat.toFixed(6), lng: +props.cursorLocation.lng.toFixed(6), alt: 99999}]};
+          props.setDrawedPolygons(props.drawedPolygons.map(polygon => 
+              polygon === currentPolygon ? newPolygon : polygon
           ))
           setCurrentPolygon(newPolygon);
+        }
       }
 
       useEffect(() => {
