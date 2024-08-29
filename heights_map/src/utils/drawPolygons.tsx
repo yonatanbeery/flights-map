@@ -1,4 +1,4 @@
-import { Box, IconButton, Input, List, ListItem, Paper, Typography } from "@mui/material";
+import { Box, Button, IconButton, Input, List, ListItem, Paper, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { DrawedPolygon } from "./types";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,7 +27,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
           <IconButton aria-label="edit" onClick={() => setCurrentPolygon(editedPolygon)}>
             <EditLocationAltIcon/>
           </IconButton>
-          <Input sx={{width:"5rem"}} value={editedPolygon.name} onChange={(text) => {
+          <Input sx={{width:"8rem"}} placeholder={"polygon name"} value={editedPolygon.name} onChange={(text) => {
             const newPolygon = {...editedPolygon, name:text.target.value};
             props.setDrawedPolygons(props.drawedPolygons.map(polygon => {return polygon === editedPolygon ? newPolygon : polygon}));
             setCurrentPolygon(newPolygon);
@@ -49,13 +49,12 @@ export const PolygonDrawing = (props: DrawerProps) => {
                 </Typography>
               </Box>
             )}
-          <hr/>
         </Box>
         </ListItem>
       )
 
       const handleKeyDown = (event: any) => {
-        if (event.key === 'Enter') {            
+        event.preventDefault();
           const point = cursorRef.current as any as LatLng;
           const polygons = polygonsRef.current as any as DrawedPolygon[];
           const currentEditedPolygon = currentRef.current as any as DrawedPolygon;
@@ -64,11 +63,10 @@ export const PolygonDrawing = (props: DrawerProps) => {
              polygon === currentEditedPolygon ? newPolygon : polygon
           ))
           setCurrentPolygon(newPolygon);
-        }
       }
 
       useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('contextmenu', handleKeyDown);
       },[]);
   
       return (
@@ -76,12 +74,13 @@ export const PolygonDrawing = (props: DrawerProps) => {
         <Typography>
           Drawed polygons:
         </Typography>
-        <List sx={{maxHeight:"22rem", overflow: 'auto',}}>
+        <List sx={{maxHeight:"20rem", overflow: 'auto',}}>
         {props.drawedPolygons.map((polygon, index) => editPolygon(polygon, index))}
         </List>
-        <IconButton aria-label="add" onClick={() => props.setDrawedPolygons([...props.drawedPolygons, {name:"", points:[]}])}>
+        <Button aria-label="add" onClick={() => props.setDrawedPolygons([...props.drawedPolygons, {name:"", points:[]}])}>
           <AddCircleOutlineIcon />
-        </IconButton>
+          Add polygon
+        </Button>
         </Paper>
       );
 }
