@@ -1,4 +1,4 @@
-export interface Point {
+export interface MapPoint {
     lat: number;
     lng:number;
     alt: number;
@@ -6,6 +6,6 @@ export interface Point {
 
   export interface DrawedPolygon {
     name: string;
-    points: Point[];
+    points: MapPoint[];
   }
   

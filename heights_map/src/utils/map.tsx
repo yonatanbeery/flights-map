@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
-import polygons from "../../../polygonsCoordinates.json";
-import { Paper, Typography } from '@mui/material';
+import defaultPolygons from "../../polygonsCoordinates.json";
+import { Button, Input, Paper, Typography } from '@mui/material';
 import RangeSlider from './slider';
 import { PolygonDrawing } from './drawPolygons';
-import { DrawedPolygon, Point } from './types';
+import { DrawedPolygon, MapPoint } from './types';
+import { getPolygons } from '../coordinates/app';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const getColor = (alt: number):string => {
   if(alt === 500) return ""
@@ -48,16 +50,19 @@ export const areaLimits = {
       zoom: 9,
     };
 
+    const [polygons, setPolygons] = useState(defaultPolygons);
+    const [isCalculatingPolygons, setIsCalculatingPolygons] = useState(false);
     const [cursorLocation, setCursorLocation] = useState(state.center);
     const [filteredHeights, setFilteredHeights] = useState<number[]>([500,10000]);
-    const [presentedPolygons, setPresentedPolygons] = useState<Point[][]>([]);
+    const [presentedPolygons, setPresentedPolygons] = useState<MapPoint[][]>([]);
     const [drawedPolygons, setDrawedPolygons] = useState<DrawedPolygon[]>([]);
+    const [warningRadius, setWarningRadius] = useState(10);
 
     useEffect(() => { 
-      setPresentedPolygons(polygons.filter((polygon: Point[]) => polygon[0].alt >= filteredHeights[0] && polygon[0].alt <= filteredHeights[1]))
-    },[filteredHeights])
+      setPresentedPolygons(polygons.filter((polygon: MapPoint[]) => polygon[0].alt >= filteredHeights[0] && polygon[0].alt <= filteredHeights[1]))
+    },[filteredHeights, polygons])
     
-    const renderedPoints = (polygon: Point[], description: string) => {  
+    const renderedPoints = (polygon: MapPoint[], description: string) => {  
       return(
       <Polygon key={`${polygon[0].alt}-${polygon[0].lat}-${polygon[0].lng}`} eventHandlers={
         {mousemove: (e) => setCursorLocation(e.latlng)}
@@ -69,17 +74,30 @@ export const areaLimits = {
     )}
 
     const heightsInformation = (
-      <Paper style={{zIndex:"1000", paddingLeft:"1rem", width:"17rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "37rem"}}>
+      <Paper style={{zIndex:"1000", paddingLeft:"1rem",paddingRight:"1rem", width:"18rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "36rem"}}>
+      {isCalculatingPolygons ? <CircularProgress/> : 
+      <>
       <Typography>
       lat: {cursorLocation.lat.toFixed(6)}
       </Typography>
       <Typography>
       lng: {cursorLocation.lng.toFixed(6)}
       </Typography>
+      <hr/>
       <div>
         <Typography>סינון גבהים</Typography>
         <RangeSlider filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
       </div>
+      <hr/>
+      <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+        <Typography>
+        ק״מ
+        </Typography>
+        <Input sx={{width:"2.5rem", marginX:"0.5rem"}} type='number' defaultValue={warningRadius} onChange={(event) => setWarningRadius(+event?.target.value)}/>
+        <Button aria-label="add" onClick={async () => setPolygons(await getPolygons(warningRadius))}>
+            חישוב מעפ״ש לפי רדיוס
+        </Button>
+      </div></>}
     </Paper>
     );
 
