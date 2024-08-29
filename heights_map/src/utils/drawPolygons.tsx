@@ -4,7 +4,6 @@ import { DrawedPolygon } from "./types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { LatLng } from "leaflet";
 
 interface DrawerProps {
     cursorLocation: { lat: number, lng: number};
