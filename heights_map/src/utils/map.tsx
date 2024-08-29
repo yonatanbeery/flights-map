@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
 import polygons from "../../../polygonsCoordinates.json";
-import pointHeights from "../../../maxHeights.json";
 import { Paper, Typography } from '@mui/material';
 import RangeSlider from './slider';
 import { PolygonDrawing } from './drawPolygons';
 import { DrawedPolygon, Point } from './types';
-
-const allPoints = pointHeights as Record<string, Record<string, Point>>
 
 const getColor = (alt: number):string => {
   if(alt === 500) return ""
@@ -32,6 +29,17 @@ const getColor = (alt: number):string => {
   else if(alt===10000) return "#4a235a"
   else if(alt===99999) return "#000000"
   else return "#FFFFFF"
+}
+
+export const areaLimits = {
+  min: {
+    lat: 33.09,
+    long: 35.08
+  },
+  max:{
+    lat: 34.72,
+    long: 36.65
+  }
 }
 
   export const SimpleMap = () => {
@@ -68,17 +76,23 @@ const getColor = (alt: number):string => {
       <Typography>
       lng: {cursorLocation.lng.toFixed(6)}
       </Typography>
-      <Typography>
-      alt: {allPoints[cursorLocation.lat.toFixed(2).toString()]?.[cursorLocation.lng.toFixed(2).toString()]?.alt || 0}
-      </Typography>
       <div>
-        <Typography>filter heights:</Typography>
+        <Typography>סינון גבהים</Typography>
         <RangeSlider filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
       </div>
     </Paper>
     );
 
-
+    const backgroundPolygon = (
+      <Polygon key={`background polygon`} color='' fillOpacity={0} eventHandlers={
+        {mousemove: (e) => setCursorLocation(e.latlng)}} positions={[
+          {lat: areaLimits.min.lat - 1, lng: areaLimits.min.long - 1},
+          {lat: areaLimits.min.lat - 1, lng: areaLimits.max.long + 1},
+          {lat: areaLimits.max.lat + 1, lng: areaLimits.max.long + 1},
+          {lat: areaLimits.max.lat + 1, lng: areaLimits.min.long - 1}
+          ]}>
+    </Polygon>
+    );
 
     return (
       <div>
@@ -89,7 +103,8 @@ const getColor = (alt: number):string => {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
-          {presentedPolygons.map((polygon => renderedPoints(polygon, `minimum height: ${polygon[0].alt}`)))}
+          {backgroundPolygon}
+          {presentedPolygons.map((polygon => renderedPoints(polygon, `גובה מעפ״ש מינימלי ללא תוספת - ${polygon[0].alt} רגל`)))}
           {drawedPolygons.map((polygon => polygon.points.length > 2 && renderedPoints(polygon.points, `${polygon.name}`)))}
         </MapContainer>
       </div>);
