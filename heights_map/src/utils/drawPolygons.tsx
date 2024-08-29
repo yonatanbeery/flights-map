@@ -27,7 +27,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
           <IconButton aria-label="edit" onClick={() => setCurrentPolygon(editedPolygon)}>
             <EditLocationAltIcon/>
           </IconButton>
-          <Input sx={{width:"8rem"}} placeholder={"polygon name"} value={editedPolygon.name} onChange={(text) => {
+          <Input sx={{width:"8rem"}} placeholder={"שם פוליגון"} value={editedPolygon.name} onChange={(text) => {
             const newPolygon = {...editedPolygon, name:text.target.value};
             props.setDrawedPolygons(props.drawedPolygons.map(polygon => {return polygon === editedPolygon ? newPolygon : polygon}));
             setCurrentPolygon(newPolygon);
@@ -72,15 +72,18 @@ export const PolygonDrawing = (props: DrawerProps) => {
       return (
         <Paper style={{zIndex:"1000", padding:"1rem", width:"19rem", position:"absolute", background: "#f2f2f2",marginLeft:"1rem", marginTop: "5rem"}}>
         <Typography>
-          Drawed polygons:
+          פוליגונים שנוצרו
         </Typography>
         <List sx={{maxHeight:"20rem", overflow: 'auto',}}>
         {props.drawedPolygons.map((polygon, index) => editPolygon(polygon, index))}
         </List>
         <Button aria-label="add" onClick={() => props.setDrawedPolygons([...props.drawedPolygons, {name:"", points:[]}])}>
           <AddCircleOutlineIcon />
-          Add polygon
+          הוסף פוליגון 
         </Button>
+        <Typography>
+          בשביל להוסיף נצ לפוליגון, יש לבחור פוליגון לעריכה ולאחר מכן ללחוץ על מקש ימני מעל הנצ הרצוי
+        </Typography>
         </Paper>
       );
 }

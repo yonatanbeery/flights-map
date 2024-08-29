@@ -34,6 +34,17 @@ const getColor = (alt: number):string => {
   else return "#FFFFFF"
 }
 
+export const areaLimits = {
+  min: {
+    lat: 33.09,
+    long: 35.08
+  },
+  max:{
+    lat: 34.72,
+    long: 36.65
+  }
+}
+
   export const SimpleMap = () => {
     const state = {
       center: { lat: 33.6, lng: 36.5},
@@ -68,17 +79,23 @@ const getColor = (alt: number):string => {
       <Typography>
       lng: {cursorLocation.lng.toFixed(6)}
       </Typography>
-      <Typography>
-      alt: {allPoints[cursorLocation.lat.toFixed(2).toString()]?.[cursorLocation.lng.toFixed(2).toString()]?.alt || 0}
-      </Typography>
       <div>
-        <Typography>filter heights:</Typography>
+        <Typography>סינון גבהים</Typography>
         <RangeSlider filteredHeights={filteredHeights} setFilteredHeights={setFilteredHeights}/>
       </div>
     </Paper>
     );
 
-
+    const backgroundPolygon = (
+      <Polygon key={`background polygon`} color='' fillOpacity={0} eventHandlers={
+        {mousemove: (e) => setCursorLocation(e.latlng)}} positions={[
+          {lat: areaLimits.min.lat - 1, lng: areaLimits.min.long - 1},
+          {lat: areaLimits.min.lat - 1, lng: areaLimits.max.long + 1},
+          {lat: areaLimits.max.lat + 1, lng: areaLimits.max.long + 1},
+          {lat: areaLimits.max.lat + 1, lng: areaLimits.min.long - 1}
+          ]}>
+    </Polygon>
+    );
 
     return (
       <div>
@@ -89,6 +106,7 @@ const getColor = (alt: number):string => {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
+          {backgroundPolygon}
           {presentedPolygons.map((polygon => renderedPoints(polygon, `minimum height: ${polygon[0].alt}`)))}
           {drawedPolygons.map((polygon => polygon.points.length > 2 && renderedPoints(polygon.points, `${polygon.name}`)))}
         </MapContainer>
