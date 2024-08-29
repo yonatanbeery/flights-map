@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Input, List, ListItem, Paper, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DrawedPolygon } from "./types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
@@ -24,7 +24,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
     const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
         <ListItem key={`${editPolygon.name}-${index}`}>
         <Box sx={{width:"100%", background:`${currentRef.current === editedPolygon ? "#3498db" : "white"}`}}>
-          <IconButton aria-label="edit" onClick={() => setCurrentPolygon(editedPolygon)}>
+          <IconButton aria-label="edit" onClick={() => currentRef.current === editedPolygon ? setCurrentPolygon({name: "", points:[]}) : setCurrentPolygon(editedPolygon)}>
             <EditLocationAltIcon/>
           </IconButton>
           <Input sx={{width:"8rem"}} placeholder={"שם פוליגון"} value={editedPolygon.name} onChange={(text) => {
@@ -33,25 +33,27 @@ export const PolygonDrawing = (props: DrawerProps) => {
             setCurrentPolygon(newPolygon);
           }
             }/>
-            {editedPolygon.points.map((point, index) => 
-              <Box key={`${editedPolygon.name}-${index}`} sx={{display:"flex", flexDirection:"row"}}>
-                <IconButton aria-label="remove" onClick={() => {
-                  const newPolygon = {name: editedPolygon.name, points:editedPolygon.points.filter(polygonPoint => polygonPoint.lat !== point.lat || polygonPoint.lng !== point.lng)};
-                  props.setDrawedPolygons(props.drawedPolygons.map(polygon => 
-                     polygon === currentRef.current ? newPolygon : polygon
-                  ))
-                  setCurrentPolygon(newPolygon);
-                }}>
-                  <DeleteIcon/>
-                </IconButton>
-                <Typography>
-                lat: {point.lat}, lng: {point.lng}
-                </Typography>
-              </Box>
-            )}
+            {currentRef.current === editedPolygon && polygonPointsList(editedPolygon)}
         </Box>
         </ListItem>
       )
+
+      const polygonPointsList = (editedPolygon: DrawedPolygon) => {return editedPolygon.points.map((point, index) => 
+        <Box key={`${editedPolygon.name}-${index}`} sx={{display:"flex", flexDirection:"row"}}>
+          <IconButton aria-label="remove" onClick={() => {
+            const newPolygon = {name: editedPolygon.name, points:editedPolygon.points.filter(polygonPoint => polygonPoint.lat !== point.lat || polygonPoint.lng !== point.lng)};
+            props.setDrawedPolygons(props.drawedPolygons.map(polygon => 
+               polygon === currentRef.current ? newPolygon : polygon
+            ))
+            setCurrentPolygon(newPolygon);
+          }}>
+            <DeleteIcon/>
+          </IconButton>
+          <Typography>
+          lat: {point.lat}, lng: {point.lng}
+          </Typography>
+        </Box>
+      )}
 
       const handleKeyDown = (event: any) => {
         event.preventDefault();
@@ -66,6 +68,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
       }
 
       useEffect(() => {
+        // document.addEventListener('contextmenu', useCallback(handleKeyDown, [currentPolygon, props.drawedPolygons, props.cursorLocation]));
         document.addEventListener('contextmenu', handleKeyDown);
       },[]);
   
