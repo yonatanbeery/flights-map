@@ -4,10 +4,10 @@ import {areaLimits } from "../utils/globals";
 export const getMaxHeight = (heights: Point[][], warningRadius: number):Point[][] => {
   const maxHeights: Point[][] = [];
   Object.keys(heights).forEach((lat) => {
-    Object.keys(heights[lat]).forEach((long) => {
-      if (!maxHeights[lat]) maxHeights[lat] = []
-      const maxPoint = getMaxHeightInRadius(heights[lat][long], heights, warningRadius)
-      maxHeights[lat][long] = {lat: Number.parseFloat(lat), long: Number.parseFloat(long), alt: maxPoint.alt}
+    Object.keys(heights[lat as any as number]).forEach((long) => {
+      if (!maxHeights[lat as any as number]) maxHeights[lat as any as number] = []
+      const maxPoint = getMaxHeightInRadius(heights[lat as any as number][long as any as number], heights, warningRadius)
+      maxHeights[lat as any as number][long as any as number] = {lat: Number.parseFloat(lat), long: Number.parseFloat(long), alt: maxPoint.alt}
     })
   })
   return maxHeights;
@@ -21,7 +21,7 @@ const getMaxHeightInRadius = (point: Point, heights: Point[][], warningRadius: n
   for(let lat = Number.parseFloat((point.lat - latDiff).toFixed(2)) ; lat < Number.parseFloat((point.lat + latDiff).toFixed(2)); lat = Number.parseFloat((lat + 0.01).toFixed(2))) {
     for(let long = Number.parseFloat((point.long - longDiff).toFixed(2)); long < Number.parseFloat((point.long + longDiff).toFixed(2)); long = Number.parseFloat((long + 0.01).toFixed(2))) {      
       if(getVectorDistance(getLatDistance(lat, point.lat), getLongDistance(long, point.long)) < warningRadius && 
-    lat >= areaLimits.min.lat && lat <= areaLimits.max.lat && long >= areaLimits.min.long && long <= areaLimits.max.long && maxPoint.alt < heights[lat][long].alt
+    lat >= areaLimits.min.lat && lat <= areaLimits.max.lat && long >= areaLimits.min.long && long <= areaLimits.max.long && (maxPoint.alt || 0) < (heights[lat as any as number][long as any as number].alt || 0)
     ) {
         maxPoint = heights[lat][long]
       }
@@ -30,7 +30,7 @@ const getMaxHeightInRadius = (point: Point, heights: Point[][], warningRadius: n
   return maxPoint
 }
 
-export const getVectorDistance = (v1, v2) => {
+export const getVectorDistance = (v1:number, v2:number) => {
   return Math.sqrt( v1*v1 + v2*v2 );
 }
 

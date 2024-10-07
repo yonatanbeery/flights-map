@@ -10,9 +10,9 @@ const initArrays = (points: Point[][]) => {
     visited = [];
     
     Object.keys(points).forEach((lat) => {
-        visited[lat] = [];
-        Object.keys(points[lat]).forEach((long) => {
-            visited[lat][long] = false;
+        visited[lat as any as number] = [];
+        Object.keys(points[lat as any as number]).forEach((long) => {
+            visited[lat as any as number][long as any as number] = false;
         })
     })
 }
@@ -42,7 +42,7 @@ const findPolygonNonRecursive = (points: Point[][], start: Point) => {
         ];
 
         neighbors.forEach(neighbor => {
-            if (isCoordinatesInPolygon(points, neighbor.lat, neighbor.long, neighbor.alt)) {
+            if (isCoordinatesInPolygon(points, neighbor.lat, neighbor.long, neighbor.alt || 0)) {
                 stack.push(points[neighbor.lat][neighbor.long]);
             }
         });
@@ -53,10 +53,10 @@ export const divideToPolygons = (points: Point[][]): Point[][][] => {
     initArrays(points);
 
     Object.keys(points).sort().forEach((lat) => {
-        Object.keys(points[lat]).sort().forEach((long) => {
-            if (!visited[lat][long]) {
+        Object.keys(points[lat as any as number]).sort().forEach((long) => {
+            if (!visited[lat as any as number][long as any as number]) {
                 polygons[currrPolygonIndex] = [];
-                findPolygonNonRecursive(points, points[lat][long]);
+                findPolygonNonRecursive(points, points[lat as any as number][long as any as number]);
                 currrPolygonIndex++;
             }
         })

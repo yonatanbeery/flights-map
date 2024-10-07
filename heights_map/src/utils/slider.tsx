@@ -8,7 +8,7 @@ interface SliderProps {
 }
 
 export default function RangeSlider(props: SliderProps) {
-  const handleChange = (event: Event, newValue: number | number[]) => {
+  const handleChange = (_: Event, newValue: number | number[]) => {
     console.log(newValue)
     props.setFilteredHeights(newValue as number[]);
   };

@@ -5,9 +5,9 @@ import { convexHull } from "./convexHull";
 export const getBorderPoints = (polygon: Point[][]):Point[] => {
     const borderPoints: any[] = [];
     Object.keys(polygon).forEach(lat => {
-        Object.keys(polygon[lat]).forEach(long => {
-            if(!isNotBorderPoint(polygon[lat][long], polygon) && !isOnStrightBorderLine(polygon[lat][long], polygon))
-                borderPoints.push(polygon[lat][long])
+        Object.keys(polygon[lat as any as number]).forEach(long => {
+            if(!isNotBorderPoint(polygon[lat as any as number][long as any as number], polygon) && !isOnStrightBorderLine(polygon[lat as any as number][long as any as number], polygon))
+                borderPoints.push(polygon[lat as any as number][long as any as number])
         })
     })
     borderPoints.sort((a,b) => a.long < b.long ? 1 : a.lat < b.lat ? 1 : 0)
