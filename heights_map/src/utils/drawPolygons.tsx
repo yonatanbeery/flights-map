@@ -12,8 +12,9 @@ import {
 	Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { DrawedPolygon } from './types';
+import { DrawedPolygon, MapPoint } from './types';
 import { RiFileExcel2Fill } from 'react-icons/ri';
+import * as XLSX from 'xlsx';
 
 interface DrawerProps {
 	cursorLocation: { lat: number; lng: number };
@@ -24,8 +25,52 @@ interface DrawerProps {
 export const PolygonDrawing = (props: DrawerProps) => {
 	const [currentPolygon, setCurrentPolygon] = useState<DrawedPolygon>();
 
+	const prepareDataForExcel = () => {
+		const maxPoints = Math.max(
+			...props.drawedPolygons.map((polygon) => polygon.points.length)
+		);
+		const result: any[] = [];
+
+		for (let i = 0; i < maxPoints; i++) {
+			const row: any = {};
+			props.drawedPolygons.forEach((polygon) => {
+				if (i < polygon.points.length) {
+					const { lat, lng } = polygon.points[i];
+					row[polygon.name] = `${lat}, ${lng}`;
+				} else {
+					row[polygon.name] = ''; // Leave blank if no point available
+				}
+			});
+			result.push(row);
+		}
+
+		return result;
+	};
+
 	const exportPolygonsToExcel = () => {
-		console.log(JSON.stringify(props.drawedPolygons));
+		const workbook = XLSX.utils.book_new();
+		const worksheet = XLSX.utils.json_to_sheet(prepareDataForExcel());
+
+		XLSX.utils.book_append_sheet(workbook, worksheet, 'PointsData');
+
+		const excelBuffer = XLSX.write(workbook, {
+			bookType: 'xlsx',
+			type: 'array',
+		});
+
+		const blob = new Blob([excelBuffer], {
+			type: 'application/octet-stream',
+		});
+		const link = document.createElement('a');
+		const url = URL.createObjectURL(blob);
+		link.href = url;
+		link.setAttribute('download', 'points_data.xlsx');
+
+		document.body.appendChild(link);
+		link.click();
+
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
 	};
 
 	const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
