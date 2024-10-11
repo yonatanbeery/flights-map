@@ -1,12 +1,11 @@
+import { Box, Button, Input, Paper, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
+import { MapContainer, Polygon, Popup, TileLayer } from 'react-leaflet';
 import defaultPolygons from '../../polygonsCoordinates.json';
-import { Button, Input, Paper, Typography, Box } from '@mui/material';
-import RangeSlider from './slider';
-import { PolygonDrawing } from './drawPolygons';
-import { DrawedPolygon, MapPoint } from './types';
 import { getPolygons } from '../coordinates/app';
-import zIndex from '@mui/material/styles/zIndex';
+import { PolygonDrawing } from './drawPolygons';
+import RangeSlider from './slider'
+import { DrawedPolygon, MapPoint } from './types' 
 
 const getColor = (alt: number): string => {
 	if (alt === 500) return '';
