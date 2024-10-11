@@ -12,9 +12,9 @@ import {
 	Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { DrawedPolygon, MapPoint } from './types';
 import { RiFileExcel2Fill } from 'react-icons/ri';
 import * as XLSX from 'xlsx';
+import { DrawedPolygon } from './types';
 
 interface DrawerProps {
 	cursorLocation: { lat: number; lng: number };
