@@ -4,8 +4,8 @@ import { MapContainer, Polygon, Popup, TileLayer } from 'react-leaflet';
 import defaultPolygons from '../../polygonsCoordinates.json';
 import { getPolygons } from '../coordinates/app';
 import { PolygonDrawing } from './drawPolygons';
-import RangeSlider from './slider'
-import { DrawedPolygon, MapPoint } from './types' 
+import RangeSlider from './slider';
+import { DrawedPolygon, MapPoint } from './types';
 
 const getColor = (alt: number): string => {
 	if (alt === 500) return '';

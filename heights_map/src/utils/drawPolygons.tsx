@@ -1,3 +1,6 @@
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import {
 	Box,
 	Button,
@@ -10,9 +13,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { DrawedPolygon } from './types';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { RiFileExcel2Fill } from 'react-icons/ri';
 
 interface DrawerProps {
 	cursorLocation: { lat: number; lng: number };
@@ -22,6 +23,10 @@ interface DrawerProps {
 
 export const PolygonDrawing = (props: DrawerProps) => {
 	const [currentPolygon, setCurrentPolygon] = useState<DrawedPolygon>();
+
+	const exportPolygonsToExcel = () => {
+		console.log(JSON.stringify(props.drawedPolygons));
+	};
 
 	const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
 		<ListItem
@@ -165,7 +170,23 @@ export const PolygonDrawing = (props: DrawerProps) => {
 				maxHeight: '60%',
 			}}
 		>
-			<Typography>פוליגונים שנוצרו</Typography>
+			<Box
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+				}}
+			>
+				<Typography>פוליגונים שנוצרו</Typography>
+				<Button
+					variant="outlined"
+					sx={{ gap: '0.5rem' }}
+					onClick={exportPolygonsToExcel}
+				>
+					<Typography>יצא פוליגונים</Typography>
+					<RiFileExcel2Fill />
+				</Button>
+			</Box>
 			<List sx={{ maxHeight: '20rem', overflow: 'auto' }}>
 				{props.drawedPolygons.map((polygon, index) =>
 					editPolygon(polygon, index)
