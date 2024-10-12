@@ -4,6 +4,7 @@ import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import {
 	Box,
 	Button,
+	FormLabel,
 	IconButton,
 	Input,
 	List,
@@ -38,7 +39,7 @@ export const PolygonDrawing = (props: DrawerProps) => {
 					const { lat, lng } = polygon.points[i];
 					row[polygon.name] = `${lat}, ${lng}`;
 				} else {
-					row[polygon.name] = ''; // Leave blank if no point available
+					row[polygon.name] = '';
 				}
 			});
 			result.push(row);
@@ -72,6 +73,8 @@ export const PolygonDrawing = (props: DrawerProps) => {
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	};
+
+	const importPpolygonsFromExcel = () => {};
 
 	const editPolygon = (editedPolygon: DrawedPolygon, index: number) => (
 		<ListItem
@@ -223,14 +226,34 @@ export const PolygonDrawing = (props: DrawerProps) => {
 				}}
 			>
 				<Typography>פוליגונים שנוצרו</Typography>
-				<Button
-					variant="outlined"
-					sx={{ gap: '0.5rem' }}
-					onClick={exportPolygonsToExcel}
-				>
-					<Typography>יצא פוליגונים</Typography>
-					<RiFileExcel2Fill />
-				</Button>
+				{props.drawedPolygons.length > 0 ? (
+					<Button
+						variant="outlined"
+						sx={{ gap: '0.5rem' }}
+						onClick={exportPolygonsToExcel}
+					>
+						<Typography>יצא פוליגונים</Typography>
+						<RiFileExcel2Fill />
+					</Button>
+				) : (
+					<Box>
+						<Input type="file" id="fileInput" style={{ display: 'none' }} />
+						<Button variant="outlined">
+							<FormLabel
+								htmlFor="fileInput"
+								sx={{
+									display: 'flex',
+									gap: '0.5rem',
+									alignItems: 'center',
+									color: 'inherit',
+								}}
+							>
+								<Typography>יבא פוליגונים</Typography>
+								<RiFileExcel2Fill />
+							</FormLabel>
+						</Button>
+					</Box>
+				)}
 			</Box>
 			<List sx={{ maxHeight: '20rem', overflow: 'auto' }}>
 				{props.drawedPolygons.map((polygon, index) =>
