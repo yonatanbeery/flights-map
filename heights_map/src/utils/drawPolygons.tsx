@@ -1,4 +1,5 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import {
@@ -12,12 +13,11 @@ import {
 	Paper,
 	Typography,
 } from '@mui/material';
+import { MuiFileInput } from 'mui-file-input';
 import { useEffect, useState } from 'react';
 import { RiFileExcel2Fill } from 'react-icons/ri';
 import * as XLSX from 'xlsx';
-import { DrawedPolygon, MapPoint } from './types';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { MuiFileInput } from 'mui-file-input';
+import { DrawedPolygon } from './types';
 
 interface DrawerProps {
 	cursorLocation: { lat: number; lng: number };
@@ -118,8 +118,6 @@ export const PolygonDrawing = (props: DrawerProps) => {
 				}
 				polygons.push(currPolygon);
 			}
-			console.log(polygons);
-
 			props.setDrawedPolygons(polygons);
 		};
 		reader.readAsArrayBuffer(file);
