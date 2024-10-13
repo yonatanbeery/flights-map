@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { RiFileExcel2Fill } from 'react-icons/ri';
 import * as XLSX from 'xlsx';
 import { DrawedPolygon } from './types';
+import { toast } from 'react-toastify';
 
 interface DrawerProps {
 	cursorLocation: { lat: number; lng: number };
@@ -85,40 +86,46 @@ export const PolygonDrawing = (props: DrawerProps) => {
 		const extantion = file.name.substring(extantionIndex + 1);
 
 		if (extantion != 'xlsx') {
-			throw new Error('file extantion must be xlsx');
+			toast.error("הסיומת של הקובץ חייבת להיות 'xlsx'");
+			return;
 		}
 
 		const reader = new FileReader();
 		reader.onload = (e) => {
-			const data = new Uint8Array(e.target?.result as ArrayBuffer);
-			const workbook = XLSX.read(data, { type: 'array' });
-			const sheet = workbook.Sheets[workbook.SheetNames[0]];
-			const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as (
-				| string
-				| number
-			)[][];
+			try {
+				const data = new Uint8Array(e.target?.result as ArrayBuffer);
+				const workbook = XLSX.read(data, { type: 'array' });
+				const sheet = workbook.Sheets[workbook.SheetNames[0]];
+				const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as (
+					| string
+					| number
+				)[][];
 
-			const points = jsonData.slice(1) as string[][];
-			const names = jsonData[0] as string[];
-			const polygons: DrawedPolygon[] = [];
+				const points = jsonData.slice(1) as string[][];
+				const names = jsonData[0] as string[];
+				const polygons: DrawedPolygon[] = [];
 
-			for (let col = 0; col < names.length; col++) {
-				if (names[col].length === 0) {
-					continue;
-				}
-
-				const currPolygon: DrawedPolygon = { name: names[col], points: [] };
-				for (let row = 0; row < points.length; row++) {
-					if (points[row][col].length === 0) {
-						break;
+				for (let col = 0; col < names.length; col++) {
+					if (names[col].length === 0) {
+						continue;
 					}
 
-					const [lat, lng] = points[row][col].split(',').map(Number);
-					currPolygon.points.push({ lat, lng, alt: 99999 });
+					const currPolygon: DrawedPolygon = { name: names[col], points: [] };
+					for (let row = 0; row < points.length; row++) {
+						if (points[row][col].length === 0) {
+							break;
+						}
+
+						const [lat, lng] = points[row][col].split(',').map(Number);
+						currPolygon.points.push({ lat, lng, alt: 99999 });
+					}
+					polygons.push(currPolygon);
 				}
-				polygons.push(currPolygon);
+				props.setDrawedPolygons(polygons);
+				toast.success('הפוליגונים הועלו בהצלחה');
+			} catch (e) {
+				toast.error('הייתה בעיה בקריאת הפוליגונים מהקובץ');
 			}
-			props.setDrawedPolygons(polygons);
 		};
 		reader.readAsArrayBuffer(file);
 	};
