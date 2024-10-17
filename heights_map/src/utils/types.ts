@@ -1,11 +1,10 @@
 export interface MapPoint {
-    lat: number;
-    lng:number;
-    alt: number;
-  }
+	lat: number;
+	lng: number;
+	alt: number;
+}
 
-  export interface DrawedPolygon {
-    name: string;
-    points: MapPoint[];
-  }
-  
+export interface DrawedPolygon {
+	name: string;
+	points: MapPoint[];
+}
